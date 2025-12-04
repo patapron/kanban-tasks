@@ -1,0 +1,74 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>
+      Kanban Tasks
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addColumn()">
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+        <ion-label>Columna</ion-label>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div
+    class="kanban-board"
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    (cdkDropListDropped)="dropColumn($event)"
+  >
+    <div
+      class="kanban-column"
+      *ngFor="let column of columns"
+      cdkDrag
+    >
+      <div class="column-header">
+        <div class="column-title-row">
+          <ion-badge color="medium" class="task-counter">{{ column.tasks.length }}</ion-badge>
+          <h3>{{ column.title }}</h3>
+          <ion-icon
+            name="pencil-outline"
+            class="edit-icon"
+            (click)="editColumnName(column)"
+          ></ion-icon>
+        </div>
+        <ion-button
+          size="small"
+          fill="clear"
+          (click)="addTask(column.id)"
+          class="add-task-btn"
+        >
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div
+        cdkDropList
+        [id]="column.id"
+        [cdkDropListData]="column.tasks"
+        [cdkDropListConnectedTo]="connectedDropLists"
+        (cdkDropListDropped)="drop($event, column.id)"
+        class="task-list"
+      >
+        <div
+          *ngFor="let task of column.tasks"
+          cdkDrag
+          class="task-card"
+          [style.background-color]="getPriorityColor(task.priority)"
+          (click)="editTask(task)"
+        >
+          <div class="task-content">
+            <h4>{{ task.title }}</h4>
+            <p class="task-description">{{ task.description }}</p>
+          </div>
+        </div>
+
+        <div *ngIf="column.tasks.length === 0" class="empty-column">
+          <p>No hay tareas</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

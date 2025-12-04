@@ -1,0 +1,153 @@
+.kanban-board {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  overflow-x: auto;
+  height: 100%;
+}
+
+.kanban-column {
+  min-width: 300px;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--ion-color-light);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: move;
+
+  &.cdk-drag-preview {
+    opacity: 0.8;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  &.cdk-drag-placeholder {
+    opacity: 0.4;
+    background: var(--ion-color-light-shade);
+  }
+}
+
+.column-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--ion-color-medium);
+
+  .column-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .task-counter {
+      font-weight: 700;
+      font-size: 14px;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .edit-icon {
+      font-size: 20px;
+      color: var(--ion-color-medium);
+      cursor: pointer;
+      padding: 4px;
+      transition: color 0.2s;
+
+      &:hover {
+        color: var(--ion-color-primary);
+      }
+    }
+  }
+
+  .add-task-btn {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    height: 32px;
+    margin: 0;
+
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+}
+
+.task-list {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 200px;
+}
+
+.task-card {
+  margin-bottom: 12px;
+  cursor: pointer;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s, box-shadow 0.2s;
+  color: white;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  }
+
+  &.cdk-drag-preview {
+    opacity: 0.9;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transform: rotate(3deg);
+  }
+
+  &.cdk-drag-placeholder {
+    opacity: 0.3;
+  }
+
+  .task-content {
+    h4 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .task-description {
+      margin: 0;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.4;
+    }
+  }
+}
+
+.empty-column {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--ion-color-medium);
+  font-style: italic;
+
+  p {
+    margin: 0;
+  }
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.task-list.cdk-drop-list-dragging .task-card:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+// Estilos para el drag de columnas
+.kanban-board.cdk-drop-list-dragging .kanban-column:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
