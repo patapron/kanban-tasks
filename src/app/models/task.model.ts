@@ -25,4 +25,5 @@ export interface Column {
   id: TaskStatus;
   title: string;
   tasks: Task[];
+  backgroundColor?: string;
 }

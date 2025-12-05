@@ -4,6 +4,8 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { HomePage } from './home.page';
+import { ColumnMenuPopoverComponent } from './column-menu-popover.component';
+import { SettingsMenuPopoverComponent } from './settings-menu-popover.component';
 
 import { HomePageRoutingModule } from './home-routing.module';
 
@@ -16,6 +18,10 @@ import { HomePageRoutingModule } from './home-routing.module';
     HomePageRoutingModule,
     DragDropModule
   ],
-  declarations: [HomePage]
+  declarations: [
+    HomePage,
+    ColumnMenuPopoverComponent,
+    SettingsMenuPopoverComponent
+  ]
 })
 export class HomePageModule {}
