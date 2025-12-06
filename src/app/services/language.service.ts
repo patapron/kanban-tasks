@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Preferences } from '@capacitor/preferences';
+import { Storage } from '@ionic/storage-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +9,12 @@ export class LanguageService {
   private readonly LANGUAGE_KEY = 'app_language';
   private availableLanguages = ['es', 'en'];
   private defaultLanguage = 'es';
+  private storageInitialized = false;
 
-  constructor(private translate: TranslateService) {
+  constructor(
+    private translate: TranslateService,
+    private storage: Storage
+  ) {
     // Configuración síncrona inicial
     this.translate.addLangs(this.availableLanguages);
     this.translate.setDefaultLang(this.defaultLanguage);
@@ -22,11 +26,19 @@ export class LanguageService {
       : this.defaultLanguage;
     this.translate.use(initialLang);
 
-    // Cargar idioma guardado de forma asíncrona
-    this.loadSavedLanguage();
+    // Inicializar storage y cargar idioma guardado
+    this.initStorage();
+  }
+
+  private async initStorage() {
+    await this.storage.create();
+    this.storageInitialized = true;
+    await this.loadSavedLanguage();
   }
 
   private async loadSavedLanguage() {
+    if (!this.storageInitialized) return;
+
     const savedLanguage = await this.getSavedLanguage();
     if (savedLanguage && this.availableLanguages.includes(savedLanguage)) {
       this.translate.use(savedLanguage);
@@ -34,17 +46,16 @@ export class LanguageService {
   }
 
   async getSavedLanguage(): Promise<string | null> {
-    const { value } = await Preferences.get({ key: this.LANGUAGE_KEY });
-    return value;
+    if (!this.storageInitialized) return null;
+    return await this.storage.get(this.LANGUAGE_KEY);
   }
 
   async setLanguage(lang: string) {
     if (this.availableLanguages.includes(lang)) {
       this.translate.use(lang);
-      await Preferences.set({
-        key: this.LANGUAGE_KEY,
-        value: lang
-      });
+      if (this.storageInitialized) {
+        await this.storage.set(this.LANGUAGE_KEY, lang);
+      }
     }
   }
 
