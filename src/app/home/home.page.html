@@ -36,6 +36,7 @@
         *ngFor="let column of columns"
         [style.background-color]="column.backgroundColor || 'var(--ion-color-light)'"
         cdkDrag
+        [cdkDragStartDelay]="700"
       >
         <div class="column-header">
           <div class="column-title-row">
@@ -61,6 +62,7 @@
             *ngFor="let task of column.tasks"
             [hidden]="task.archived"
             cdkDrag
+            [cdkDragStartDelay]="700"
             class="task-card"
             (click)="editTask(task)"
           >
