@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { AlertController, ModalController, PopoverController, ActionSheetController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { TaskService } from '../services/task.service';
+import { LanguageService } from '../services/language.service';
 import { Column, Task, TaskStatus, TaskPriority } from '../models/task.model';
 
 @Component({
@@ -18,7 +20,9 @@ export class HomePage implements OnInit {
     private taskService: TaskService,
     private alertController: AlertController,
     private actionSheetController: ActionSheetController,
-    private popoverController: PopoverController
+    private popoverController: PopoverController,
+    private translate: TranslateService,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit() {
@@ -60,26 +64,26 @@ export class HomePage implements OnInit {
 
   async addTask(columnStatus: TaskStatus) {
     const alert = await this.alertController.create({
-      header: 'Nueva Tarea',
+      header: this.translate.instant('TASK.NEW_TASK'),
       inputs: [
         {
           name: 'title',
           type: 'text',
-          placeholder: 'Título de la tarea'
+          placeholder: this.translate.instant('TASK.TITLE')
         },
         {
           name: 'description',
           type: 'textarea',
-          placeholder: 'Descripción (opcional)'
+          placeholder: this.translate.instant('TASK.DESCRIPTION_OPTIONAL')
         }
       ],
       buttons: [
         {
-          text: 'Cancelar',
+          text: this.translate.instant('BUTTONS.CANCEL'),
           role: 'cancel'
         },
         {
-          text: 'Siguiente',
+          text: this.translate.instant('BUTTONS.NEXT'),
           handler: async (data) => {
             if (data.title) {
               // El alert se cerrará automáticamente
@@ -99,11 +103,11 @@ export class HomePage implements OnInit {
 
   async selectTaskPriority(title: string, description: string, columnStatus: TaskStatus) {
     const actionSheet = await this.actionSheetController.create({
-      header: 'Seleccionar Prioridad',
+      header: this.translate.instant('TASK.SELECT_PRIORITY'),
       cssClass: 'priority-action-sheet',
       buttons: [
         {
-          text: '🔴 Alta',
+          text: '🔴 ' + this.translate.instant('TASK.PRIORITY.HIGH'),
           handler: async () => {
             await this.taskService.addTask({
               title,
@@ -114,7 +118,7 @@ export class HomePage implements OnInit {
           }
         },
         {
-          text: '🟡 Media',
+          text: '🟡 ' + this.translate.instant('TASK.PRIORITY.MEDIUM'),
           handler: async () => {
             await this.taskService.addTask({
               title,
@@ -125,7 +129,7 @@ export class HomePage implements OnInit {
           }
         },
         {
-          text: '🟢 Baja',
+          text: '🟢 ' + this.translate.instant('TASK.PRIORITY.LOW'),
           handler: async () => {
             await this.taskService.addTask({
               title,
@@ -136,7 +140,7 @@ export class HomePage implements OnInit {
           }
         },
         {
-          text: 'Cancelar',
+          text: this.translate.instant('BUTTONS.CANCEL'),
           role: 'cancel'
         }
       ]
@@ -150,21 +154,21 @@ export class HomePage implements OnInit {
       header: task.title,
       buttons: [
         {
-          text: 'Editar Información',
+          text: this.translate.instant('TASK.ACTIONS.EDIT_INFO'),
           icon: 'create-outline',
           handler: async () => {
             await this.editTaskDetails(task);
           }
         },
         {
-          text: 'Cambiar Prioridad',
+          text: this.translate.instant('TASK.ACTIONS.CHANGE_PRIORITY'),
           icon: 'flag-outline',
           handler: async () => {
             await this.changeTaskPriority(task);
           }
         },
         {
-          text: 'Eliminar',
+          text: this.translate.instant('TASK.ACTIONS.DELETE'),
           icon: 'trash-outline',
           role: 'destructive',
           handler: async () => {
@@ -172,7 +176,7 @@ export class HomePage implements OnInit {
           }
         },
         {
-          text: 'Cancelar',
+          text: this.translate.instant('BUTTONS.CANCEL'),
           icon: 'close',
           role: 'cancel'
         }
@@ -184,28 +188,28 @@ export class HomePage implements OnInit {
 
   async editTaskDetails(task: Task) {
     const alert = await this.alertController.create({
-      header: 'Editar Tarea',
+      header: this.translate.instant('TASK.EDIT_TASK'),
       inputs: [
         {
           name: 'title',
           type: 'text',
-          placeholder: 'Título de la tarea',
+          placeholder: this.translate.instant('TASK.TITLE'),
           value: task.title
         },
         {
           name: 'description',
           type: 'textarea',
-          placeholder: 'Descripción',
+          placeholder: this.translate.instant('TASK.DESCRIPTION'),
           value: task.description
         }
       ],
       buttons: [
         {
-          text: 'Cancelar',
+          text: this.translate.instant('BUTTONS.CANCEL'),
           role: 'cancel'
         },
         {
-          text: 'Guardar',
+          text: this.translate.instant('BUTTONS.SAVE'),
           handler: async (data) => {
             await this.taskService.updateTask(task.id, {
               title: data.title,
@@ -221,10 +225,10 @@ export class HomePage implements OnInit {
 
   async changeTaskPriority(task: Task) {
     const actionSheet = await this.actionSheetController.create({
-      header: 'Cambiar Prioridad',
+      header: this.translate.instant('TASK.ACTIONS.CHANGE_PRIORITY'),
       buttons: [
         {
-          text: '🔴 Alta' + (task.priority === TaskPriority.HIGH ? ' ✓' : ''),
+          text: '🔴 ' + this.translate.instant('TASK.PRIORITY.HIGH') + (task.priority === TaskPriority.HIGH ? ' ✓' : ''),
           handler: async () => {
             await this.taskService.updateTask(task.id, {
               priority: TaskPriority.HIGH
@@ -232,7 +236,7 @@ export class HomePage implements OnInit {
           }
         },
         {
-          text: '🟡 Media' + (task.priority === TaskPriority.MEDIUM ? ' ✓' : ''),
+          text: '🟡 ' + this.translate.instant('TASK.PRIORITY.MEDIUM') + (task.priority === TaskPriority.MEDIUM ? ' ✓' : ''),
           handler: async () => {
             await this.taskService.updateTask(task.id, {
               priority: TaskPriority.MEDIUM
@@ -240,7 +244,7 @@ export class HomePage implements OnInit {
           }
         },
         {
-          text: '🟢 Baja' + (task.priority === TaskPriority.LOW ? ' ✓' : ''),
+          text: '🟢 ' + this.translate.instant('TASK.PRIORITY.LOW') + (task.priority === TaskPriority.LOW ? ' ✓' : ''),
           handler: async () => {
             await this.taskService.updateTask(task.id, {
               priority: TaskPriority.LOW
@@ -248,7 +252,7 @@ export class HomePage implements OnInit {
           }
         },
         {
-          text: 'Cancelar',
+          text: this.translate.instant('BUTTONS.CANCEL'),
           role: 'cancel'
         }
       ]
@@ -277,21 +281,21 @@ export class HomePage implements OnInit {
 
   async addColumn() {
     const alert = await this.alertController.create({
-      header: 'Nueva Columna',
+      header: this.translate.instant('COLUMN.NEW_COLUMN'),
       inputs: [
         {
           name: 'title',
           type: 'text',
-          placeholder: 'Nombre de la columna'
+          placeholder: this.translate.instant('COLUMN.NAME')
         }
       ],
       buttons: [
         {
-          text: 'Cancelar',
+          text: this.translate.instant('BUTTONS.CANCEL'),
           role: 'cancel'
         },
         {
-          text: 'Crear',
+          text: this.translate.instant('BUTTONS.CREATE'),
           handler: async (data) => {
             if (data.title) {
               await this.taskService.addColumn(data.title);
@@ -306,29 +310,29 @@ export class HomePage implements OnInit {
 
   async editColumnName(column: Column) {
     const alert = await this.alertController.create({
-      header: 'Editar Columna',
+      header: this.translate.instant('COLUMN.EDIT_COLUMN'),
       inputs: [
         {
           name: 'title',
           type: 'text',
-          placeholder: 'Nombre de la columna',
+          placeholder: this.translate.instant('COLUMN.NAME'),
           value: column.title
         }
       ],
       buttons: [
         {
-          text: 'Cancelar',
+          text: this.translate.instant('BUTTONS.CANCEL'),
           role: 'cancel'
         },
         {
-          text: 'Eliminar Columna',
+          text: this.translate.instant('COLUMN.DELETE_COLUMN'),
           role: 'destructive',
           handler: async () => {
             await this.taskService.deleteColumn(column.id);
           }
         },
         {
-          text: 'Guardar',
+          text: this.translate.instant('BUTTONS.SAVE'),
           handler: async (data) => {
             if (data.title) {
               await this.taskService.updateColumnTitle(column.id, data.title);
@@ -376,15 +380,15 @@ export class HomePage implements OnInit {
           break;
         case 'deleteColumn':
           const confirm = await this.alertController.create({
-            header: '¿Eliminar columna?',
-            message: `Se eliminarán todas las tareas de "${column.title}"`,
+            header: this.translate.instant('COLUMN.DELETE_CONFIRM'),
+            message: `${this.translate.instant('COLUMN.DELETE_MESSAGE')} "${column.title}"`,
             buttons: [
               {
-                text: 'Cancelar',
+                text: this.translate.instant('BUTTONS.CANCEL'),
                 role: 'cancel'
               },
               {
-                text: 'Eliminar',
+                text: this.translate.instant('TASK.ACTIONS.DELETE'),
                 role: 'destructive',
                 handler: async () => {
                   await this.taskService.deleteColumn(column.id);
@@ -400,52 +404,52 @@ export class HomePage implements OnInit {
 
   async changeColumnColor(column: Column) {
     const actionSheet = await this.actionSheetController.create({
-      header: 'Seleccionar Color',
+      header: this.translate.instant('COLUMN.COLORS.SELECT'),
       buttons: [
         {
-          text: '🔵 Azul Claro',
+          text: '🔵 ' + this.translate.instant('COLUMN.COLORS.LIGHT_BLUE'),
           handler: async () => {
             await this.updateColumnBackground(column, '#e3f2fd');
           }
         },
         {
-          text: '🟢 Verde Claro',
+          text: '🟢 ' + this.translate.instant('COLUMN.COLORS.LIGHT_GREEN'),
           handler: async () => {
             await this.updateColumnBackground(column, '#e8f5e9');
           }
         },
         {
-          text: '🟡 Amarillo Claro',
+          text: '🟡 ' + this.translate.instant('COLUMN.COLORS.LIGHT_YELLOW'),
           handler: async () => {
             await this.updateColumnBackground(column, '#fff9c4');
           }
         },
         {
-          text: '🟠 Naranja Claro',
+          text: '🟠 ' + this.translate.instant('COLUMN.COLORS.LIGHT_ORANGE'),
           handler: async () => {
             await this.updateColumnBackground(column, '#ffe0b2');
           }
         },
         {
-          text: '🔴 Rojo Claro',
+          text: '🔴 ' + this.translate.instant('COLUMN.COLORS.LIGHT_RED'),
           handler: async () => {
             await this.updateColumnBackground(column, '#ffebee');
           }
         },
         {
-          text: '🟣 Morado Claro',
+          text: '🟣 ' + this.translate.instant('COLUMN.COLORS.LIGHT_PURPLE'),
           handler: async () => {
             await this.updateColumnBackground(column, '#f3e5f5');
           }
         },
         {
-          text: '⚪ Gris (Por defecto)',
+          text: '⚪ ' + this.translate.instant('COLUMN.COLORS.GRAY_DEFAULT'),
           handler: async () => {
             await this.updateColumnBackground(column, '#f4f5f8');
           }
         },
         {
-          text: 'Cancelar',
+          text: this.translate.instant('BUTTONS.CANCEL'),
           role: 'cancel'
         }
       ]
@@ -469,15 +473,15 @@ export class HomePage implements OnInit {
     // Aquí podrías implementar un sistema de archivo más complejo
     // Por ahora, simplemente movemos todas las tareas a "Completado"
     const alert = await this.alertController.create({
-      header: 'Archivar Tareas',
-      message: `¿Mover todas las tareas de "${column.title}" a Completado?`,
+      header: this.translate.instant('COLUMN.ARCHIVE.TITLE'),
+      message: `${this.translate.instant('COLUMN.ARCHIVE.MESSAGE')} "${column.title}" ${this.translate.instant('COLUMN.ARCHIVE.TO_COMPLETED')}`,
       buttons: [
         {
-          text: 'Cancelar',
+          text: this.translate.instant('BUTTONS.CANCEL'),
           role: 'cancel'
         },
         {
-          text: 'Archivar',
+          text: this.translate.instant('COLUMN.ARCHIVE.BUTTON'),
           handler: async () => {
             for (const task of column.tasks) {
               await this.taskService.moveTask(task.id, column.id, TaskStatus.DONE, 0);
@@ -492,15 +496,15 @@ export class HomePage implements OnInit {
 
   async clearColumn(column: Column) {
     const alert = await this.alertController.create({
-      header: 'Vaciar Columna',
-      message: `¿Eliminar todas las tareas de "${column.title}"?`,
+      header: this.translate.instant('COLUMN.CLEAR.TITLE'),
+      message: `${this.translate.instant('COLUMN.CLEAR.MESSAGE')} "${column.title}"?`,
       buttons: [
         {
-          text: 'Cancelar',
+          text: this.translate.instant('BUTTONS.CANCEL'),
           role: 'cancel'
         },
         {
-          text: 'Eliminar Todo',
+          text: this.translate.instant('COLUMN.CLEAR.BUTTON'),
           role: 'destructive',
           handler: async () => {
             for (const task of [...column.tasks]) {
@@ -532,6 +536,9 @@ export class HomePage implements OnInit {
 
     if (data?.action) {
       switch (data.action) {
+        case 'changeLanguage':
+          this.changeLanguage();
+          break;
         case 'exportData':
           this.exportData();
           break;
@@ -546,15 +553,15 @@ export class HomePage implements OnInit {
           break;
         case 'clearAll':
           const confirm = await this.alertController.create({
-            header: '¿Limpiar todo?',
-            message: 'Se eliminarán todas las tareas y columnas personalizadas.',
+            header: this.translate.instant('SETTINGS.CLEAR_ALL_CONFIRM'),
+            message: this.translate.instant('SETTINGS.CLEAR_ALL_MESSAGE'),
             buttons: [
               {
-                text: 'Cancelar',
+                text: this.translate.instant('BUTTONS.CANCEL'),
                 role: 'cancel'
               },
               {
-                text: 'Limpiar',
+                text: this.translate.instant('BUTTONS.CLEAR'),
                 role: 'destructive',
                 handler: async () => {
                   await this.clearAllData();
@@ -581,9 +588,9 @@ export class HomePage implements OnInit {
 
   async importData() {
     const alert = await this.alertController.create({
-      header: 'Importar Datos',
-      message: 'Esta funcionalidad requiere seleccionar un archivo. Por ahora, puedes pegar el contenido JSON directamente.',
-      buttons: ['OK']
+      header: this.translate.instant('IMPORT.TITLE'),
+      message: this.translate.instant('IMPORT.MESSAGE'),
+      buttons: [this.translate.instant('BUTTONS.OK')]
     });
     await alert.present();
   }
@@ -605,17 +612,17 @@ export class HomePage implements OnInit {
     });
 
     const alert = await this.alertController.create({
-      header: 'Estadísticas',
+      header: this.translate.instant('STATISTICS.TITLE'),
       message: `
-        <strong>Total de tareas:</strong> ${totalTasks}<br><br>
-        <strong>Por estado:</strong><br>
+        <strong>${this.translate.instant('STATISTICS.TOTAL_TASKS')}:</strong> ${totalTasks}<br><br>
+        <strong>${this.translate.instant('STATISTICS.BY_STATUS')}:</strong><br>
         ${this.columns.map(col => `${col.title}: ${col.tasks.length}`).join('<br>')}<br><br>
-        <strong>Por prioridad:</strong><br>
-        🔴 Alta: ${tasksByPriority.high}<br>
-        🟡 Media: ${tasksByPriority.medium}<br>
-        🟢 Baja: ${tasksByPriority.low}
+        <strong>${this.translate.instant('STATISTICS.BY_PRIORITY')}:</strong><br>
+        🔴 ${this.translate.instant('TASK.PRIORITY.HIGH')}: ${tasksByPriority.high}<br>
+        🟡 ${this.translate.instant('TASK.PRIORITY.MEDIUM')}: ${tasksByPriority.medium}<br>
+        🟢 ${this.translate.instant('TASK.PRIORITY.LOW')}: ${tasksByPriority.low}
       `,
-      buttons: ['Cerrar']
+      buttons: [this.translate.instant('BUTTONS.CLOSE')]
     });
 
     await alert.present();
@@ -623,19 +630,42 @@ export class HomePage implements OnInit {
 
   async showHelp() {
     const alert = await this.alertController.create({
-      header: 'Ayuda',
+      header: this.translate.instant('HELP.TITLE'),
       message: `
-        <strong>Kanban Tasks</strong><br><br>
-        • <strong>Crear tarea:</strong> Click en "Añadir tarjeta"<br>
-        • <strong>Mover tarea:</strong> Arrastra entre columnas<br>
-        • <strong>Editar tarea:</strong> Click en la tarjeta<br>
-        • <strong>Menú de columna:</strong> Click en los 3 puntos<br>
-        • <strong>Personalizar columna:</strong> Cambia nombre y color<br>
+        <strong>${this.translate.instant('APP.TITLE')}</strong><br><br>
+        • <strong>${this.translate.instant('HELP.CREATE_TASK')}</strong> ${this.translate.instant('HELP.CREATE_TASK_DESC')}<br>
+        • <strong>${this.translate.instant('HELP.MOVE_TASK')}</strong> ${this.translate.instant('HELP.MOVE_TASK_DESC')}<br>
+        • <strong>${this.translate.instant('HELP.EDIT_TASK')}</strong> ${this.translate.instant('HELP.EDIT_TASK_DESC')}<br>
+        • <strong>${this.translate.instant('HELP.COLUMN_MENU')}</strong> ${this.translate.instant('HELP.COLUMN_MENU_DESC')}<br>
+        • <strong>${this.translate.instant('HELP.CUSTOMIZE_COLUMN')}</strong> ${this.translate.instant('HELP.CUSTOMIZE_COLUMN_DESC')}<br>
       `,
-      buttons: ['Entendido']
+      buttons: [this.translate.instant('BUTTONS.UNDERSTOOD')]
     });
 
     await alert.present();
+  }
+
+  async changeLanguage() {
+    const languages = this.languageService.getAvailableLanguages();
+    const currentLang = this.languageService.getCurrentLanguage();
+
+    const actionSheet = await this.actionSheetController.create({
+      header: this.translate.instant('SETTINGS.LANGUAGE'),
+      buttons: [
+        ...languages.map(lang => ({
+          text: this.languageService.getLanguageName(lang) + (currentLang === lang ? ' ✓' : ''),
+          handler: async () => {
+            await this.languageService.setLanguage(lang);
+          }
+        })),
+        {
+          text: this.translate.instant('BUTTONS.CANCEL'),
+          role: 'cancel'
+        }
+      ]
+    });
+
+    await actionSheet.present();
   }
 
   async clearAllData() {

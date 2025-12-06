@@ -1,29 +1,36 @@
 import { Component } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-settings-menu-popover',
   template: `
     <ion-list>
+      <ion-item button (click)="changeLanguage()">
+        <ion-icon name="language-outline" slot="start"></ion-icon>
+        <ion-label>{{ 'SETTINGS.LANGUAGE' | translate }}</ion-label>
+        <ion-note slot="end">{{ getCurrentLanguageName() }}</ion-note>
+      </ion-item>
       <ion-item button (click)="exportData()">
         <ion-icon name="download-outline" slot="start"></ion-icon>
-        <ion-label>Exportar Datos</ion-label>
+        <ion-label>{{ 'SETTINGS.EXPORT_DATA' | translate }}</ion-label>
       </ion-item>
       <ion-item button (click)="importData()">
         <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
-        <ion-label>Importar Datos</ion-label>
+        <ion-label>{{ 'SETTINGS.IMPORT_DATA' | translate }}</ion-label>
       </ion-item>
       <ion-item button (click)="showStatistics()">
         <ion-icon name="stats-chart-outline" slot="start"></ion-icon>
-        <ion-label>Ver Estadísticas</ion-label>
+        <ion-label>{{ 'SETTINGS.STATISTICS' | translate }}</ion-label>
       </ion-item>
       <ion-item button (click)="showHelp()">
         <ion-icon name="help-circle-outline" slot="start"></ion-icon>
-        <ion-label>Ayuda</ion-label>
+        <ion-label>{{ 'SETTINGS.HELP' | translate }}</ion-label>
       </ion-item>
       <ion-item button (click)="clearAll()">
         <ion-icon name="trash-outline" slot="start" color="danger"></ion-icon>
-        <ion-label color="danger">Limpiar Todo</ion-label>
+        <ion-label color="danger">{{ 'SETTINGS.CLEAR_ALL' | translate }}</ion-label>
       </ion-item>
     </ion-list>
   `,
@@ -41,7 +48,20 @@ import { PopoverController } from '@ionic/angular';
   standalone: false
 })
 export class SettingsMenuPopoverComponent {
-  constructor(private popoverController: PopoverController) {}
+  constructor(
+    private popoverController: PopoverController,
+    public translate: TranslateService,
+    private languageService: LanguageService
+  ) {}
+
+  getCurrentLanguageName(): string {
+    const currentLang = this.languageService.getCurrentLanguage();
+    return this.languageService.getLanguageName(currentLang);
+  }
+
+  async changeLanguage() {
+    await this.popoverController.dismiss({ action: 'changeLanguage' });
+  }
 
   async exportData() {
     await this.popoverController.dismiss({ action: 'exportData' });

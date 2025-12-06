@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-title>
-      Kanban Tasks
+      {{ 'APP.TITLE' | translate }}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="openSettingsMenu($event)">
@@ -69,7 +69,7 @@
             class="add-task-btn"
           >
             <ion-icon slot="start" name="add-outline"></ion-icon>
-            Añadir tarjeta
+            {{ 'HOME.ADD_CARD' | translate }}
           </ion-button>
         </div>
       </div>
@@ -83,7 +83,7 @@
           class="add-column-btn"
         >
           <ion-icon slot="start" name="add-outline"></ion-icon>
-          Añadir columna
+          {{ 'HOME.ADD_COLUMN' | translate }}
         </ion-button>
       </div>
     </div>

@@ -1,0 +1,106 @@
+{
+  "APP": {
+    "TITLE": "Kanban Tasks"
+  },
+  "HOME": {
+    "ADD_CARD": "Add card",
+    "ADD_COLUMN": "Add column"
+  },
+  "TASK": {
+    "NEW_TASK": "New Task",
+    "EDIT_TASK": "Edit Task",
+    "TITLE": "Task title",
+    "DESCRIPTION": "Description",
+    "DESCRIPTION_OPTIONAL": "Description (optional)",
+    "SELECT_PRIORITY": "Select Priority",
+    "PRIORITY": {
+      "HIGH": "High",
+      "MEDIUM": "Medium",
+      "LOW": "Low"
+    },
+    "ACTIONS": {
+      "EDIT_INFO": "Edit Information",
+      "CHANGE_PRIORITY": "Change Priority",
+      "DELETE": "Delete"
+    }
+  },
+  "COLUMN": {
+    "NEW_COLUMN": "New Column",
+    "EDIT_COLUMN": "Edit Column",
+    "NAME": "Column name",
+    "DELETE_COLUMN": "Delete Column",
+    "DELETE_CONFIRM": "Delete column?",
+    "DELETE_MESSAGE": "All tasks from will be deleted",
+    "MENU": {
+      "CHANGE_NAME": "Change Name",
+      "CHANGE_COLOR": "Change Background Color",
+      "ARCHIVE_TASKS": "Archive All Tasks",
+      "CLEAR_COLUMN": "Clear Column",
+      "DELETE_COLUMN": "Delete Column"
+    },
+    "COLORS": {
+      "SELECT": "Select Color",
+      "LIGHT_BLUE": "Light Blue",
+      "LIGHT_GREEN": "Light Green",
+      "LIGHT_YELLOW": "Light Yellow",
+      "LIGHT_ORANGE": "Light Orange",
+      "LIGHT_RED": "Light Red",
+      "LIGHT_PURPLE": "Light Purple",
+      "GRAY_DEFAULT": "Gray (Default)"
+    },
+    "ARCHIVE": {
+      "TITLE": "Archive Tasks",
+      "MESSAGE": "Move all tasks from",
+      "TO_COMPLETED": "to Completed?",
+      "BUTTON": "Archive"
+    },
+    "CLEAR": {
+      "TITLE": "Clear Column",
+      "MESSAGE": "Delete all tasks from",
+      "BUTTON": "Delete All"
+    }
+  },
+  "SETTINGS": {
+    "EXPORT_DATA": "Export Data",
+    "IMPORT_DATA": "Import Data",
+    "STATISTICS": "View Statistics",
+    "HELP": "Help",
+    "CLEAR_ALL": "Clear All",
+    "CLEAR_ALL_CONFIRM": "Clear everything?",
+    "CLEAR_ALL_MESSAGE": "All tasks and custom columns will be deleted.",
+    "LANGUAGE": "Language"
+  },
+  "IMPORT": {
+    "TITLE": "Import Data",
+    "MESSAGE": "This functionality requires selecting a file. For now, you can paste the JSON content directly."
+  },
+  "STATISTICS": {
+    "TITLE": "Statistics",
+    "TOTAL_TASKS": "Total tasks",
+    "BY_STATUS": "By status",
+    "BY_PRIORITY": "By priority"
+  },
+  "HELP": {
+    "TITLE": "Help",
+    "CREATE_TASK": "Create task:",
+    "CREATE_TASK_DESC": "Click \"Add card\"",
+    "MOVE_TASK": "Move task:",
+    "MOVE_TASK_DESC": "Drag between columns",
+    "EDIT_TASK": "Edit task:",
+    "EDIT_TASK_DESC": "Click on card",
+    "COLUMN_MENU": "Column menu:",
+    "COLUMN_MENU_DESC": "Click the 3 dots",
+    "CUSTOMIZE_COLUMN": "Customize column:",
+    "CUSTOMIZE_COLUMN_DESC": "Change name and color"
+  },
+  "BUTTONS": {
+    "CANCEL": "Cancel",
+    "NEXT": "Next",
+    "SAVE": "Save",
+    "CREATE": "Create",
+    "CLOSE": "Close",
+    "OK": "OK",
+    "UNDERSTOOD": "Got it",
+    "CLEAR": "Clear"
+  }
+}

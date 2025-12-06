@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { TranslateModule } from '@ngx-translate/core';
 import { HomePage } from './home.page';
 import { ColumnMenuPopoverComponent } from './column-menu-popover.component';
 import { SettingsMenuPopoverComponent } from './settings-menu-popover.component';
@@ -16,7 +17,8 @@ import { HomePageRoutingModule } from './home-routing.module';
     FormsModule,
     IonicModule,
     HomePageRoutingModule,
-    DragDropModule
+    DragDropModule,
+    TranslateModule
   ],
   declarations: [
     HomePage,

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PopoverController, AlertController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Column } from '../models/task.model';
 
 @Component({
@@ -8,23 +9,23 @@ import { Column } from '../models/task.model';
     <ion-list>
       <ion-item button (click)="editColumnName()">
         <ion-icon name="create-outline" slot="start"></ion-icon>
-        <ion-label>Cambiar Nombre</ion-label>
+        <ion-label>{{ 'COLUMN.MENU.CHANGE_NAME' | translate }}</ion-label>
       </ion-item>
       <ion-item button (click)="changeColor()">
         <ion-icon name="color-palette-outline" slot="start"></ion-icon>
-        <ion-label>Cambiar Color de Fondo</ion-label>
+        <ion-label>{{ 'COLUMN.MENU.CHANGE_COLOR' | translate }}</ion-label>
       </ion-item>
       <ion-item button (click)="archiveTasks()">
         <ion-icon name="archive-outline" slot="start"></ion-icon>
-        <ion-label>Archivar Todas las Tareas</ion-label>
+        <ion-label>{{ 'COLUMN.MENU.ARCHIVE_TASKS' | translate }}</ion-label>
       </ion-item>
       <ion-item button (click)="clearColumn()">
         <ion-icon name="trash-outline" slot="start" color="danger"></ion-icon>
-        <ion-label color="danger">Vaciar Columna</ion-label>
+        <ion-label color="danger">{{ 'COLUMN.MENU.CLEAR_COLUMN' | translate }}</ion-label>
       </ion-item>
       <ion-item button (click)="deleteColumn()">
         <ion-icon name="close-circle-outline" slot="start" color="danger"></ion-icon>
-        <ion-label color="danger">Eliminar Columna</ion-label>
+        <ion-label color="danger">{{ 'COLUMN.MENU.DELETE_COLUMN' | translate }}</ion-label>
       </ion-item>
     </ion-list>
   `,
@@ -46,7 +47,8 @@ export class ColumnMenuPopoverComponent implements OnInit {
 
   constructor(
     private popoverController: PopoverController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    public translate: TranslateService
   ) {}
 
   ngOnInit() {}

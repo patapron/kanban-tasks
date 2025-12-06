@@ -1,0 +1,106 @@
+{
+  "APP": {
+    "TITLE": "Kanban Tasks"
+  },
+  "HOME": {
+    "ADD_CARD": "Añadir tarjeta",
+    "ADD_COLUMN": "Añadir columna"
+  },
+  "TASK": {
+    "NEW_TASK": "Nueva Tarea",
+    "EDIT_TASK": "Editar Tarea",
+    "TITLE": "Título de la tarea",
+    "DESCRIPTION": "Descripción",
+    "DESCRIPTION_OPTIONAL": "Descripción (opcional)",
+    "SELECT_PRIORITY": "Seleccionar Prioridad",
+    "PRIORITY": {
+      "HIGH": "Alta",
+      "MEDIUM": "Media",
+      "LOW": "Baja"
+    },
+    "ACTIONS": {
+      "EDIT_INFO": "Editar Información",
+      "CHANGE_PRIORITY": "Cambiar Prioridad",
+      "DELETE": "Eliminar"
+    }
+  },
+  "COLUMN": {
+    "NEW_COLUMN": "Nueva Columna",
+    "EDIT_COLUMN": "Editar Columna",
+    "NAME": "Nombre de la columna",
+    "DELETE_COLUMN": "Eliminar Columna",
+    "DELETE_CONFIRM": "¿Eliminar columna?",
+    "DELETE_MESSAGE": "Se eliminarán todas las tareas de",
+    "MENU": {
+      "CHANGE_NAME": "Cambiar Nombre",
+      "CHANGE_COLOR": "Cambiar Color de Fondo",
+      "ARCHIVE_TASKS": "Archivar Todas las Tareas",
+      "CLEAR_COLUMN": "Vaciar Columna",
+      "DELETE_COLUMN": "Eliminar Columna"
+    },
+    "COLORS": {
+      "SELECT": "Seleccionar Color",
+      "LIGHT_BLUE": "Azul Claro",
+      "LIGHT_GREEN": "Verde Claro",
+      "LIGHT_YELLOW": "Amarillo Claro",
+      "LIGHT_ORANGE": "Naranja Claro",
+      "LIGHT_RED": "Rojo Claro",
+      "LIGHT_PURPLE": "Morado Claro",
+      "GRAY_DEFAULT": "Gris (Por defecto)"
+    },
+    "ARCHIVE": {
+      "TITLE": "Archivar Tareas",
+      "MESSAGE": "¿Mover todas las tareas de",
+      "TO_COMPLETED": "a Completado?",
+      "BUTTON": "Archivar"
+    },
+    "CLEAR": {
+      "TITLE": "Vaciar Columna",
+      "MESSAGE": "¿Eliminar todas las tareas de",
+      "BUTTON": "Eliminar Todo"
+    }
+  },
+  "SETTINGS": {
+    "EXPORT_DATA": "Exportar Datos",
+    "IMPORT_DATA": "Importar Datos",
+    "STATISTICS": "Ver Estadísticas",
+    "HELP": "Ayuda",
+    "CLEAR_ALL": "Limpiar Todo",
+    "CLEAR_ALL_CONFIRM": "¿Limpiar todo?",
+    "CLEAR_ALL_MESSAGE": "Se eliminarán todas las tareas y columnas personalizadas.",
+    "LANGUAGE": "Idioma"
+  },
+  "IMPORT": {
+    "TITLE": "Importar Datos",
+    "MESSAGE": "Esta funcionalidad requiere seleccionar un archivo. Por ahora, puedes pegar el contenido JSON directamente."
+  },
+  "STATISTICS": {
+    "TITLE": "Estadísticas",
+    "TOTAL_TASKS": "Total de tareas",
+    "BY_STATUS": "Por estado",
+    "BY_PRIORITY": "Por prioridad"
+  },
+  "HELP": {
+    "TITLE": "Ayuda",
+    "CREATE_TASK": "Crear tarea:",
+    "CREATE_TASK_DESC": "Click en \"Añadir tarjeta\"",
+    "MOVE_TASK": "Mover tarea:",
+    "MOVE_TASK_DESC": "Arrastra entre columnas",
+    "EDIT_TASK": "Editar tarea:",
+    "EDIT_TASK_DESC": "Click en la tarjeta",
+    "COLUMN_MENU": "Menú de columna:",
+    "COLUMN_MENU_DESC": "Click en los 3 puntos",
+    "CUSTOMIZE_COLUMN": "Personalizar columna:",
+    "CUSTOMIZE_COLUMN_DESC": "Cambia nombre y color"
+  },
+  "BUTTONS": {
+    "CANCEL": "Cancelar",
+    "NEXT": "Siguiente",
+    "SAVE": "Guardar",
+    "CREATE": "Crear",
+    "CLOSE": "Cerrar",
+    "OK": "OK",
+    "UNDERSTOOD": "Entendido",
+    "CLEAR": "Limpiar"
+  }
+}

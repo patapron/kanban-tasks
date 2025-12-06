@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Task, TaskStatus, Column, TaskPriority } from '../models/task.model';
-import { Preferences } from '@capacitor/preferences';
+import { Storage } from '@ionic/storage-angular';
 import { NotificationService } from './notification.service';
 
 @Injectable({
@@ -11,9 +11,18 @@ export class TaskService {
   private readonly STORAGE_KEY = 'kanban_tasks';
   private columnsSubject = new BehaviorSubject<Column[]>([]);
   public columns$: Observable<Column[]> = this.columnsSubject.asObservable();
+  private storage: Storage | null = null;
 
-  constructor(private notificationService: NotificationService) {
-    this.loadTasks();
+  constructor(
+    private notificationService: NotificationService,
+    private storageService: Storage
+  ) {
+    this.init();
+  }
+
+  async init(): Promise<void> {
+    this.storage = await this.storageService.create();
+    await this.loadTasks();
   }
 
   private initializeColumns(): Column[] {
@@ -38,7 +47,7 @@ export class TaskService {
 
   async loadTasks(): Promise<void> {
     try {
-      const { value } = await Preferences.get({ key: this.STORAGE_KEY });
+      const value = await this.storage?.get(this.STORAGE_KEY);
       if (value) {
         const columns = JSON.parse(value) as Column[];
         // Convertir strings de fecha a objetos Date
@@ -63,10 +72,7 @@ export class TaskService {
   async saveTasks(): Promise<void> {
     try {
       const columns = this.columnsSubject.value;
-      await Preferences.set({
-        key: this.STORAGE_KEY,
-        value: JSON.stringify(columns)
-      });
+      await this.storage?.set(this.STORAGE_KEY, JSON.stringify(columns));
     } catch (error) {
       console.error('Error saving tasks:', error);
     }
