@@ -3,79 +3,38 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Task, TaskStatus, Column, TaskPriority } from '../models/task.model';
 import { Storage } from '@ionic/storage-angular';
 import { NotificationService } from './notification.service';
+import { BoardService } from './board.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
-  private readonly STORAGE_KEY = 'kanban_tasks';
   private columnsSubject = new BehaviorSubject<Column[]>([]);
   public columns$: Observable<Column[]> = this.columnsSubject.asObservable();
   private storage: Storage | null = null;
 
   constructor(
     private notificationService: NotificationService,
-    private storageService: Storage
+    private storageService: Storage,
+    private boardService: BoardService
   ) {
     this.init();
   }
 
   async init(): Promise<void> {
     this.storage = await this.storageService.create();
-    await this.loadTasks();
-  }
 
-  private initializeColumns(): Column[] {
-    return [
-      {
-        id: TaskStatus.TODO,
-        title: 'Por hacer',
-        tasks: []
-      },
-      {
-        id: TaskStatus.IN_PROGRESS,
-        title: 'En progreso',
-        tasks: []
-      },
-      {
-        id: TaskStatus.DONE,
-        title: 'Completado',
-        tasks: []
+    // Escuchar cambios en el tablero activo
+    this.boardService.activeBoard$.subscribe(board => {
+      if (board) {
+        this.columnsSubject.next(board.columns);
       }
-    ];
+    });
   }
 
-  async loadTasks(): Promise<void> {
-    try {
-      const value = await this.storage?.get(this.STORAGE_KEY);
-      if (value) {
-        const columns = JSON.parse(value) as Column[];
-        // Convertir strings de fecha a objetos Date
-        columns.forEach(column => {
-          column.tasks.forEach(task => {
-            task.createdAt = new Date(task.createdAt);
-            if (task.dueDate) {
-              task.dueDate = new Date(task.dueDate);
-            }
-          });
-        });
-        this.columnsSubject.next(columns);
-      } else {
-        this.columnsSubject.next(this.initializeColumns());
-      }
-    } catch (error) {
-      console.error('Error loading tasks:', error);
-      this.columnsSubject.next(this.initializeColumns());
-    }
-  }
-
-  async saveTasks(): Promise<void> {
-    try {
-      const columns = this.columnsSubject.value;
-      await this.storage?.set(this.STORAGE_KEY, JSON.stringify(columns));
-    } catch (error) {
-      console.error('Error saving tasks:', error);
-    }
+  private async saveColumns(): Promise<void> {
+    const columns = this.columnsSubject.value;
+    await this.boardService.updateActiveBoardColumns(columns);
   }
 
   async addTask(task: Partial<Task>): Promise<void> {
@@ -95,7 +54,7 @@ export class TaskService {
     if (columnIndex !== -1) {
       columns[columnIndex].tasks.push(newTask);
       this.columnsSubject.next([...columns]);
-      await this.saveTasks();
+      await this.saveColumns();
 
       // Programar notificación si está habilitada
       if (newTask.notificationEnabled && newTask.dueDate) {
@@ -115,7 +74,7 @@ export class TaskService {
         };
         column.tasks[taskIndex] = updatedTask;
         this.columnsSubject.next([...columns]);
-        await this.saveTasks();
+        await this.saveColumns();
 
         // Cancelar notificación anterior y reprogramar si es necesario
         await this.notificationService.cancelTaskNotification(taskId);
@@ -134,7 +93,7 @@ export class TaskService {
       if (taskIndex !== -1) {
         column.tasks.splice(taskIndex, 1);
         this.columnsSubject.next([...columns]);
-        await this.saveTasks();
+        await this.saveColumns();
 
         // Cancelar notificación de la tarea eliminada
         await this.notificationService.cancelTaskNotification(taskId);
@@ -158,12 +117,12 @@ export class TaskService {
     toColumn.tasks.splice(newIndex, 0, task);
 
     this.columnsSubject.next([...columns]);
-    await this.saveTasks();
+    await this.saveColumns();
   }
 
   async reorderColumns(columns: Column[]): Promise<void> {
     this.columnsSubject.next([...columns]);
-    await this.saveTasks();
+    await this.saveColumns();
   }
 
   async addColumn(title: string): Promise<void> {
@@ -175,7 +134,7 @@ export class TaskService {
     };
     columns.push(newColumn);
     this.columnsSubject.next([...columns]);
-    await this.saveTasks();
+    await this.saveColumns();
   }
 
   async deleteColumn(columnId: string | TaskStatus): Promise<void> {
@@ -184,7 +143,7 @@ export class TaskService {
     if (columnIndex !== -1) {
       columns.splice(columnIndex, 1);
       this.columnsSubject.next([...columns]);
-      await this.saveTasks();
+      await this.saveColumns();
     }
   }
 
@@ -194,7 +153,7 @@ export class TaskService {
     if (column) {
       column.title = newTitle;
       this.columnsSubject.next([...columns]);
-      await this.saveTasks();
+      await this.saveColumns();
     }
   }
 
@@ -204,5 +163,49 @@ export class TaskService {
 
   getColumns(): Column[] {
     return this.columnsSubject.value;
+  }
+
+  async archiveTask(taskId: string): Promise<void> {
+    const columns = this.columnsSubject.value;
+    for (const column of columns) {
+      const taskIndex = column.tasks.findIndex(t => t.id === taskId);
+      if (taskIndex !== -1) {
+        column.tasks[taskIndex].archived = true;
+        column.tasks[taskIndex].archivedAt = new Date();
+        this.columnsSubject.next([...columns]);
+        await this.saveColumns();
+        break;
+      }
+    }
+  }
+
+  async unarchiveTask(taskId: string): Promise<void> {
+    const columns = this.columnsSubject.value;
+    for (const column of columns) {
+      const taskIndex = column.tasks.findIndex(t => t.id === taskId);
+      if (taskIndex !== -1) {
+        column.tasks[taskIndex].archived = false;
+        column.tasks[taskIndex].archivedAt = undefined;
+        this.columnsSubject.next([...columns]);
+        await this.saveColumns();
+        break;
+      }
+    }
+  }
+
+  getArchivedTasks(): Task[] {
+    const columns = this.columnsSubject.value;
+    const archivedTasks: Task[] = [];
+
+    for (const column of columns) {
+      const archived = column.tasks.filter(task => task.archived === true);
+      archivedTasks.push(...archived);
+    }
+
+    return archivedTasks;
+  }
+
+  getArchivedTasksCount(): number {
+    return this.getArchivedTasks().length;
   }
 }

@@ -21,6 +21,7 @@
     "ACTIONS": {
       "EDIT_INFO": "Edit Information",
       "CHANGE_PRIORITY": "Change Priority",
+      "ARCHIVE": "Archive",
       "DELETE": "Delete"
     }
   },
@@ -58,6 +59,23 @@
       "TITLE": "Clear Column",
       "MESSAGE": "Delete all tasks from",
       "BUTTON": "Delete All"
+    }
+  },
+  "BOARD": {
+    "MY_BOARDS": "My Boards",
+    "NEW_BOARD": "New Board",
+    "EDIT_BOARD": "Edit Board",
+    "DELETE_BOARD": "Delete Board",
+    "BOARD_NAME": "Board name",
+    "BOARD_DESCRIPTION": "Board description",
+    "BOARD_DESCRIPTION_OPTIONAL": "Description (optional)",
+    "DELETE_CONFIRM": "Delete board?",
+    "DELETE_MESSAGE": "All columns and tasks from this board will be deleted.",
+    "CANNOT_DELETE_LAST": "Cannot delete the last board",
+    "ACTIONS": {
+      "SWITCH_BOARD": "Switch Board",
+      "CREATE_BOARD": "Create New Board",
+      "MANAGE_BOARDS": "Manage Boards"
     }
   },
   "SETTINGS": {
@@ -102,5 +120,12 @@
     "OK": "OK",
     "UNDERSTOOD": "Got it",
     "CLEAR": "Clear"
+  },
+  "ARCHIVED": {
+    "TITLE": "Archived Tasks",
+    "EMPTY_TITLE": "No archived tasks",
+    "EMPTY_MESSAGE": "Archived tasks will appear here",
+    "ARCHIVED_ON": "Archived on",
+    "UNARCHIVE": "Unarchive"
   }
 }

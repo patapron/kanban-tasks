@@ -1,9 +1,20 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="openBoardsMenu($event)">
+        <ion-icon slot="icon-only" name="grid-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>
-      {{ 'APP.TITLE' | translate }}
+      {{ activeBoard?.name || ('APP.TITLE' | translate) }}
     </ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="openArchivedTasks()">
+        <ion-icon slot="icon-only" name="archive-outline"></ion-icon>
+        <ion-badge *ngIf="archivedTasksCount > 0" color="danger" class="archived-badge">
+          {{ archivedTasksCount }}
+        </ion-badge>
+      </ion-button>
       <ion-button (click)="openSettingsMenu($event)">
         <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
       </ion-button>
@@ -28,7 +39,7 @@
       >
         <div class="column-header">
           <div class="column-title-row">
-            <ion-badge class="task-counter">{{ column.tasks.length }}</ion-badge>
+            <ion-badge class="task-counter">{{ getActiveTasksCount(column) }}</ion-badge>
             <h3>{{ column.title }}</h3>
             <ion-icon
               name="ellipsis-vertical"
@@ -48,6 +59,7 @@
         >
           <div
             *ngFor="let task of column.tasks"
+            [hidden]="task.archived"
             cdkDrag
             class="task-card"
             (click)="editTask(task)"

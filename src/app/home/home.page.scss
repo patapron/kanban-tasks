@@ -218,3 +218,13 @@
 .kanban-board.cdk-drop-list-dragging .kanban-column:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+
+.archived-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 10px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+}

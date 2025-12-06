@@ -21,6 +21,7 @@
     "ACTIONS": {
       "EDIT_INFO": "Editar Información",
       "CHANGE_PRIORITY": "Cambiar Prioridad",
+      "ARCHIVE": "Archivar",
       "DELETE": "Eliminar"
     }
   },
@@ -58,6 +59,23 @@
       "TITLE": "Vaciar Columna",
       "MESSAGE": "¿Eliminar todas las tareas de",
       "BUTTON": "Eliminar Todo"
+    }
+  },
+  "BOARD": {
+    "MY_BOARDS": "Mis Tableros",
+    "NEW_BOARD": "Nuevo Tablero",
+    "EDIT_BOARD": "Editar Tablero",
+    "DELETE_BOARD": "Eliminar Tablero",
+    "BOARD_NAME": "Nombre del tablero",
+    "BOARD_DESCRIPTION": "Descripción del tablero",
+    "BOARD_DESCRIPTION_OPTIONAL": "Descripción (opcional)",
+    "DELETE_CONFIRM": "¿Eliminar tablero?",
+    "DELETE_MESSAGE": "Se eliminarán todas las columnas y tareas de este tablero.",
+    "CANNOT_DELETE_LAST": "No se puede eliminar el último tablero",
+    "ACTIONS": {
+      "SWITCH_BOARD": "Cambiar de Tablero",
+      "CREATE_BOARD": "Crear Nuevo Tablero",
+      "MANAGE_BOARDS": "Gestionar Tableros"
     }
   },
   "SETTINGS": {
@@ -102,5 +120,12 @@
     "OK": "OK",
     "UNDERSTOOD": "Entendido",
     "CLEAR": "Limpiar"
+  },
+  "ARCHIVED": {
+    "TITLE": "Tareas Archivadas",
+    "EMPTY_TITLE": "No hay tareas archivadas",
+    "EMPTY_MESSAGE": "Las tareas archivadas aparecerán aquí",
+    "ARCHIVED_ON": "Archivada el",
+    "UNARCHIVE": "Desarchivar"
   }
 }

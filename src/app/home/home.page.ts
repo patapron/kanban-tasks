@@ -4,7 +4,9 @@ import { AlertController, ModalController, PopoverController, ActionSheetControl
 import { TranslateService } from '@ngx-translate/core';
 import { TaskService } from '../services/task.service';
 import { LanguageService } from '../services/language.service';
+import { BoardService } from '../services/board.service';
 import { Column, Task, TaskStatus, TaskPriority } from '../models/task.model';
+import { Board } from '../models/board.model';
 
 @Component({
   selector: 'app-home',
@@ -14,13 +16,17 @@ import { Column, Task, TaskStatus, TaskPriority } from '../models/task.model';
 })
 export class HomePage implements OnInit {
   columns: Column[] = [];
+  activeBoard: Board | null = null;
   TaskPriority = TaskPriority;
+  archivedTasksCount = 0;
 
   constructor(
     private taskService: TaskService,
+    private boardService: BoardService,
     private alertController: AlertController,
     private actionSheetController: ActionSheetController,
     private popoverController: PopoverController,
+    private modalController: ModalController,
     private translate: TranslateService,
     private languageService: LanguageService
   ) {}
@@ -28,6 +34,11 @@ export class HomePage implements OnInit {
   ngOnInit() {
     this.taskService.columns$.subscribe(columns => {
       this.columns = columns;
+      this.archivedTasksCount = this.taskService.getArchivedTasksCount();
+    });
+
+    this.boardService.activeBoard$.subscribe(board => {
+      this.activeBoard = board;
     });
   }
 
@@ -165,6 +176,13 @@ export class HomePage implements OnInit {
           icon: 'flag-outline',
           handler: async () => {
             await this.changeTaskPriority(task);
+          }
+        },
+        {
+          text: this.translate.instant('TASK.ACTIONS.ARCHIVE'),
+          icon: 'archive-outline',
+          handler: async () => {
+            await this.taskService.archiveTask(task.id);
           }
         },
         {
@@ -518,6 +536,76 @@ export class HomePage implements OnInit {
     await alert.present();
   }
 
+  async openBoardsMenu(event: Event) {
+    event.stopPropagation();
+
+    const boards = this.boardService.getAllBoards();
+    const activeBoard = this.boardService.getActiveBoard();
+
+    const actionSheet = await this.actionSheetController.create({
+      header: this.translate.instant('BOARD.MY_BOARDS'),
+      buttons: [
+        ...boards.map(board => ({
+          text: board.name + (activeBoard?.id === board.id ? ' ✓' : ''),
+          handler: async () => {
+            await this.boardService.setActiveBoard(board.id);
+          }
+        })),
+        {
+          text: this.translate.instant('BOARD.ACTIONS.CREATE_BOARD'),
+          icon: 'add-outline',
+          handler: async () => {
+            await this.createNewBoard();
+          }
+        },
+        {
+          text: this.translate.instant('BUTTONS.CANCEL'),
+          role: 'cancel'
+        }
+      ]
+    });
+
+    await actionSheet.present();
+  }
+
+  async createNewBoard() {
+    const alert = await this.alertController.create({
+      header: this.translate.instant('BOARD.NEW_BOARD'),
+      inputs: [
+        {
+          name: 'name',
+          type: 'text',
+          placeholder: this.translate.instant('BOARD.BOARD_NAME')
+        },
+        {
+          name: 'description',
+          type: 'textarea',
+          placeholder: this.translate.instant('BOARD.BOARD_DESCRIPTION_OPTIONAL')
+        }
+      ],
+      buttons: [
+        {
+          text: this.translate.instant('BUTTONS.CANCEL'),
+          role: 'cancel'
+        },
+        {
+          text: this.translate.instant('BUTTONS.CREATE'),
+          handler: async (data) => {
+            if (data.name) {
+              const newBoard = await this.boardService.createBoard({
+                name: data.name,
+                description: data.description
+              });
+              await this.boardService.setActiveBoard(newBoard.id);
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
   async openSettingsMenu(event: Event) {
     event.stopPropagation();
 
@@ -686,5 +774,30 @@ export class HomePage implements OnInit {
     for (const column of customColumns) {
       await this.taskService.deleteColumn(column.id);
     }
+  }
+
+  async openArchivedTasks() {
+    const { ArchivedTasksModalComponent } = await import('./archived-tasks-modal.component');
+
+    const modal = await this.modalController.create({
+      component: ArchivedTasksModalComponent,
+      componentProps: {
+        archivedTasks: this.taskService.getArchivedTasks()
+      }
+    });
+
+    await modal.present();
+
+    const { data } = await modal.onDidDismiss();
+
+    if (data?.action === 'unarchive' && data?.taskId) {
+      await this.taskService.unarchiveTask(data.taskId);
+    } else if (data?.action === 'delete' && data?.taskId) {
+      await this.taskService.deleteTask(data.taskId);
+    }
+  }
+
+  getActiveTasksCount(column: Column): number {
+    return column.tasks.filter(task => !task.archived).length;
   }
 }

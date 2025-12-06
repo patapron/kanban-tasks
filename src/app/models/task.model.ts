@@ -7,6 +7,8 @@ export interface Task {
   dueDate?: Date;
   createdAt: Date;
   notificationEnabled: boolean;
+  archived?: boolean;
+  archivedAt?: Date;
 }
 
 export enum TaskStatus {
