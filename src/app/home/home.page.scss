@@ -1,6 +1,30 @@
+// Estilos para la toolbar personalizada
+.custom-toolbar {
+  --background: #1F1F21;
+  --color: #A9ABAF;
+
+  ion-title {
+    color: #A9ABAF;
+  }
+
+  ion-button {
+    --color: #A9ABAF;
+  }
+
+  ion-icon {
+    color: #A9ABAF;
+  }
+
+  ion-badge {
+    --background: #eb445a;
+    --color: #fff;
+  }
+}
+
 .kanban-container {
   height: 100%;
   padding: 16px;
+  background-color: #5C6266;
 }
 
 .kanban-board {
@@ -20,21 +44,63 @@
   border-radius: 12px;
   padding: 12px;
   cursor: move;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #101204 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   transition: box-shadow 0.2s;
 
   &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  &.load-before-move {
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: fillLeftToRight 0.4s linear 0.3s forwards;
+      pointer-events: none;
+      border-radius: 12px;
+    }
   }
 
   &.cdk-drag-preview {
-    opacity: 0.8;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+    // Velo blanquecino sobre la columna mientras se arrastra
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.15);
+      pointer-events: none;
+      border-radius: 12px;
+      animation: none !important;
+      transform: none !important;
+    }
   }
 
   &.cdk-drag-placeholder {
-    opacity: 0.4;
-    background: var(--ion-color-light-shade);
+    opacity: 0.3;
+    background: rgba(182, 184, 186, 0.2);
+    border: 2px dashed #B6B8BA;
+
+    &::after {
+      animation: none !important;
+      display: none;
+    }
   }
 }
 
@@ -56,8 +122,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: rgba(0, 0, 0, 0.15);
-      color: var(--ion-color-dark);
+      background-color: rgba(182, 184, 186, 0.2);
+      color: #B6B8BA;
       border-radius: 12px;
       padding: 0 8px;
     }
@@ -67,20 +133,20 @@
       font-size: 16px;
       font-weight: 600;
       flex: 1;
-      color: var(--ion-color-dark);
+      color: #B6B8BA;
     }
 
     .menu-icon {
       font-size: 20px;
-      color: var(--ion-color-medium);
+      color: #B6B8BA;
       cursor: pointer;
       padding: 4px;
       border-radius: 4px;
       transition: all 0.2s;
 
       &:hover {
-        color: var(--ion-color-primary);
-        background-color: rgba(0, 0, 0, 0.05);
+        color: #E0E0E0;
+        background-color: rgba(255, 255, 255, 0.1);
       }
     }
   }
@@ -96,48 +162,99 @@
 
 .task-card {
   cursor: pointer;
-  background-color: #f5f5f5;
+  background-color: #242528;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s, box-shadow 0.2s;
   overflow: hidden;
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  // Hover desactivado para evitar confusión
+  // &:hover {
+  //   transform: translateY(-4px);
+  //   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+  // }
+
+  // Indicador de progreso - velo que se rellena de izquierda a derecha (load before move)
+  &.load-before-move {
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: fillLeftToRight 0.4s linear 0.3s forwards;
+      pointer-events: none;
+      border-radius: 8px;
+    }
+  }
+
+  @keyframes fillLeftToRight {
+    0% {
+      transform: scaleX(0);
+    }
+    100% {
+      transform: scaleX(1);
+    }
   }
 
   &.cdk-drag-preview {
-    opacity: 0.9;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    transform: rotate(2deg);
+    position: relative;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+    // Velo blanquecino sobre la tarjeta mientras se arrastra
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.2);
+      pointer-events: none;
+      border-radius: 8px;
+      animation: none !important;
+      transform: none !important;
+    }
   }
 
   &.cdk-drag-placeholder {
     opacity: 0.3;
-    background: var(--ion-color-light);
+    background: rgba(182, 184, 186, 0.2);
+    border: 2px dashed #B6B8BA;
+
+    &::after {
+      animation: none !important;
+      display: none;
+    }
   }
 
   .task-priority-bar {
-    height: 4px;
+    height: 8px;
     width: 100%;
   }
 
   .task-content {
-    padding: 12px;
+    padding: 8px 12px;
 
     h4 {
-      margin: 0 0 6px 0;
+      margin: 0 0 4px 0;
       font-size: 14px;
       font-weight: 600;
-      color: #2c3e50;
+      color: #B6B8BA;
       line-height: 1.3;
     }
 
     .task-description {
       margin: 0;
       font-size: 12px;
-      color: #546e7a;
+      color: #B6B8BA;
       line-height: 1.4;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -152,7 +269,7 @@
   margin-top: 4px;
 
   .add-task-btn {
-    --color: var(--ion-color-medium);
+    --color: #B6B8BA;
     font-size: 14px;
     height: 36px;
     margin: 0;
@@ -161,8 +278,8 @@
     justify-content: flex-start;
 
     &:hover {
-      --color: var(--ion-color-dark);
-      --background: rgba(0, 0, 0, 0.05);
+      --color: #E0E0E0;
+      --background: rgba(255, 255, 255, 0.1);
     }
 
     ion-icon {
@@ -174,8 +291,8 @@
 .add-column-card {
   min-width: 280px;
   max-width: 280px;
-  background-color: rgba(0, 0, 0, 0.03);
-  border: 2px dashed var(--ion-color-medium);
+  background-color: rgba(16, 18, 4, 0.5);
+  border: 2px dashed #B6B8BA;
   border-radius: 12px;
   padding: 12px;
   display: flex;
@@ -184,12 +301,12 @@
   transition: all 0.2s;
 
   &:hover {
-    background-color: rgba(var(--ion-color-primary-rgb), 0.05);
-    border-color: var(--ion-color-primary);
+    background-color: rgba(16, 18, 4, 0.8);
+    border-color: #E0E0E0;
   }
 
   .add-column-btn {
-    --color: var(--ion-color-medium);
+    --color: #B6B8BA;
     font-size: 14px;
     height: 44px;
     margin: 0;
@@ -198,7 +315,7 @@
     width: 100%;
 
     &:hover {
-      --color: var(--ion-color-primary);
+      --color: #E0E0E0;
     }
 
     ion-icon {

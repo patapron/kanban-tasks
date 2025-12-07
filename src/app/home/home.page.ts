@@ -19,6 +19,8 @@ export class HomePage implements OnInit {
   activeBoard: Board | null = null;
   TaskPriority = TaskPriority;
   archivedTasksCount = 0;
+  loadBeforeMoveTaskId: string | null = null;
+  loadBeforeMoveColumnId: string | TaskStatus | null = null;
 
   constructor(
     private taskService: TaskService,
@@ -799,5 +801,32 @@ export class HomePage implements OnInit {
 
   getActiveTasksCount(column: Column): number {
     return column.tasks.filter(task => !task.archived).length;
+  }
+
+  onTaskPointerDown(taskId: string, event: PointerEvent) {
+    // Detener propagación para evitar activar el efecto de la columna
+    event.stopPropagation();
+
+    // Solo activar para click izquierdo o touch
+    if (event.button === 0 || event.pointerType === 'touch') {
+      this.loadBeforeMoveTaskId = taskId;
+    }
+  }
+
+  onColumnPointerDown(columnId: string | TaskStatus, event: PointerEvent) {
+    // Solo activar para click izquierdo o touch
+    if (event.button === 0 || event.pointerType === 'touch') {
+      this.loadBeforeMoveColumnId = columnId;
+    }
+  }
+
+  onPointerUp() {
+    this.loadBeforeMoveTaskId = null;
+    this.loadBeforeMoveColumnId = null;
+  }
+
+  onDragStarted() {
+    this.loadBeforeMoveTaskId = null;
+    this.loadBeforeMoveColumnId = null;
   }
 }

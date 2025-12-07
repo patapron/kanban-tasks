@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="primary">
+  <ion-toolbar class="custom-toolbar">
     <ion-buttons slot="start">
       <ion-button (click)="openBoardsMenu($event)">
         <ion-icon slot="icon-only" name="grid-outline"></ion-icon>
@@ -37,6 +37,11 @@
         [style.background-color]="column.backgroundColor || 'var(--ion-color-light)'"
         cdkDrag
         [cdkDragStartDelay]="700"
+        [class.load-before-move]="loadBeforeMoveColumnId === column.id"
+        (pointerdown)="onColumnPointerDown(column.id, $event)"
+        (pointerup)="onPointerUp()"
+        (pointercancel)="onPointerUp()"
+        (cdkDragStarted)="onDragStarted()"
       >
         <div class="column-header">
           <div class="column-title-row">
@@ -64,6 +69,11 @@
             cdkDrag
             [cdkDragStartDelay]="700"
             class="task-card"
+            [class.load-before-move]="loadBeforeMoveTaskId === task.id"
+            (pointerdown)="onTaskPointerDown(task.id, $event)"
+            (pointerup)="onPointerUp()"
+            (pointercancel)="onPointerUp()"
+            (cdkDragStarted)="onDragStarted()"
             (click)="editTask(task)"
           >
             <div class="task-priority-bar" [style.background-color]="getPriorityColor(task.priority)"></div>
