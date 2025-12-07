@@ -54,6 +54,9 @@ src/assets/i18n/
 - ✅ Mover tareas entre columnas (drag & drop)
 - ✅ Prioridades: Alta (🔴), Media (🟡), Baja (🟢)
 - ✅ Indicador visual de prioridad en cada tarjeta
+- ✅ **Archivar/desarchivar tareas** (no se eliminan, se ocultan)
+- ✅ Modal de tareas archivadas con contador en header
+- ✅ Restaurar tareas archivadas
 
 ### 3. Gestión de Columnas
 - ✅ Crear columnas personalizadas
@@ -63,7 +66,7 @@ src/assets/i18n/
 - ✅ Archivar todas las tareas de una columna
 - ✅ Vaciar columna (eliminar todas las tareas)
 - ✅ Eliminar columna
-- ✅ Contador de tareas por columna
+- ✅ Contador de tareas activas por columna (excluye archivadas)
 
 ### 4. Internacionalización (i18n)
 - ✅ Soporte para Español e Inglés
@@ -76,7 +79,27 @@ src/assets/i18n/
 - ✅ Notificaciones locales para tareas con fecha límite
 - ✅ Capacitor Local Notifications
 
-### 6. Otras Funcionalidades
+### 6. UI/UX Avanzado
+
+#### Efecto "Load Before Move" (Drag & Drop)
+- ✅ Delay de 700ms antes de activar drag & drop
+- ✅ Indicador visual de carga (0-300ms: delay, 300-700ms: animación)
+- ✅ Velo blanquecino que se llena de izquierda a derecha
+- ✅ Animación CSS con `scaleX` y `animation-delay: 0.3s`
+- ✅ Aplicado tanto a tarjetas como a columnas
+- ✅ Prevención de propagación de eventos (tarjeta no activa columna)
+- ✅ Velo estático permanece durante el arrastre
+
+#### Tema Oscuro Personalizado
+- ✅ **Toolbar**: `#1F1F21` con texto/iconos `#A9ABAF`
+- ✅ **Board background**: `#5C6266`
+- ✅ **Columnas**: `#101204` con texto `#B6B8BA`
+- ✅ **Tarjetas**: `#242528` con texto `#B6B8BA`
+- ✅ **Barra de prioridad**: 8px de altura
+- ✅ Colores de prioridad: Rojo (#eb445a), Amarillo (#ffc409), Verde (#2dd36f)
+- ✅ Hover desactivado en tarjetas (evita confusión con drag)
+
+### 7. Otras Funcionalidades
 - ✅ Exportar datos en formato JSON
 - ✅ Estadísticas de tareas (total, por estado, por prioridad)
 - ✅ Sistema de ayuda integrado
@@ -171,6 +194,8 @@ interface Task {
   dueDate?: Date;
   createdAt: Date;
   notificationEnabled?: boolean;
+  archived?: boolean;      // Nueva: indica si está archivada
+  archivedAt?: Date;       // Nueva: fecha de archivado
 }
 
 enum TaskStatus {
@@ -297,25 +322,142 @@ ionic capacitor run android
 3. **Sincronización**: TaskService y BoardService trabajan juntos - TaskService SIEMPRE guarda a través de BoardService
 4. **Protecciones**: No se puede eliminar el último tablero (validación en BoardService)
 
-## Próximos Pasos Potenciales
+## Historial de Desarrollo
 
-- [ ] Implementar gestión de tableros desde settings (editar/eliminar)
-- [ ] Añadir descripción de tablero en la vista
+### Sesión 2025-12-07: UI/UX, Archivado y Build Android
+
+#### Funcionalidades Implementadas
+1. **Sistema de Archivado de Tareas**
+   - Agregados campos `archived` y `archivedAt` al modelo Task
+   - Métodos `archiveTask()`, `unarchiveTask()`, `getArchivedTasks()` en TaskService
+   - Componente standalone `ArchivedTasksModalComponent` para ver/gestionar archivadas
+   - Badge contador en header con número de tareas archivadas
+   - Filtrado: tareas archivadas ocultas con `[hidden]="task.archived"`
+   - Swipe-to-unarchive/delete en modal
+
+2. **Efecto "Load Before Move"** (Drag & Drop mejorado)
+   - Implementado delay de 700ms con `cdkDragStartDelay="700"`
+   - Animación CSS de velo que se llena de izquierda a derecha
+   - Timeline: 0-300ms (nada), 300-700ms (animación), 700ms (drag activo)
+   - Variables de estado: `loadBeforeMoveTaskId`, `loadBeforeMoveColumnId`
+   - Event handlers: `onTaskPointerDown()`, `onColumnPointerDown()`, `onPointerUp()`, `onDragStarted()`
+   - Prevención de propagación: click en tarjeta no activa efecto en columna
+   - Velo estático permanece durante el arrastre (transform resetted)
+
+3. **Tema Oscuro Personalizado**
+   - Colores aplicados en `home.page.scss`:
+     - Toolbar: `#1F1F21` / texto: `#A9ABAF`
+     - Board: `#5C6266`
+     - Columnas: `#101204` / texto: `#B6B8BA`
+     - Tarjetas: `#242528` / texto: `#B6B8BA`
+   - Barra de prioridad aumentada de 4px a 8px
+   - Hover desactivado en tarjetas para evitar confusión
+
+4. **Build y Despliegue Android**
+   - Ajustado budget CSS en `angular.json` (4kb → 6kb)
+   - Build de producción exitoso (`npm run build`)
+   - Sincronización con Capacitor (`npx cap sync android`)
+   - Instalación de Java JDK 25 LTS (Adoptium/Temurin)
+   - Configuración de Android SDK Command Line Tools
+   - Variables de entorno: `JAVA_HOME`, `ANDROID_HOME`
+   - Archivo `local.properties` creado con ruta del SDK
+   - APK generado exitosamente: `app-debug.apk`
+   - **✅ Aplicación instalada y funcionando en móvil Android**
+
+#### Archivos Modificados
+- `src/app/models/task.model.ts` - Agregados campos archived/archivedAt
+- `src/app/services/task.service.ts` - Métodos de archivado
+- `src/app/home/archived-tasks-modal.component.ts` - Nuevo componente standalone
+- `src/app/home/home.page.ts` - Lógica load-before-move y archivado
+- `src/app/home/home.page.html` - Event handlers y binding de estados
+- `src/app/home/home.page.scss` - Tema oscuro y animaciones load-before-move
+- `src/assets/i18n/es.json` y `en.json` - Traducciones de archivado
+- `angular.json` - Budget aumentado a 6kb
+- `android/local.properties` - Configuración SDK
+
+#### Decisiones Técnicas
+- **Archivado soft-delete**: Las tareas archivadas se mantienen en el array pero ocultas con `[hidden]`
+- **Animación CSS pura**: Preferida sobre JavaScript para mejor performance
+- **Standalone component**: Modal de archivado usa nuevo sistema standalone de Angular
+- **Event.stopPropagation()**: Evita conflictos entre eventos de tarjeta y columna
+- **Java 25 LTS**: Versión más reciente compatible con Android Gradle
+
+## Problemas Identificados
+
+### 🔴 PENDIENTE: Barra de estado Android
+**Descripción**: La barra superior de Android (status bar) se ve por encima de la barra de menú de la aplicación.
+
+**Posibles soluciones a investigar**:
+- Configurar `StatusBar` plugin de Capacitor
+- Ajustar `ion-header` con `translucent` o padding-top
+- Revisar configuración de `SafeArea` en Android
+- Usar `StatusBar.setOverlaysWebView(false)`
+
+## Sugerencias Pendientes
+
+### 1. Sistema de Temas Escalable (ALTA PRIORIDAD)
+**Propuesta**: Implementar sistema de temas dinámico con Variables CSS + Service
+
+**Estructura sugerida**:
+```
+src/theme/
+├── theme.service.ts          # Gestión de temas
+├── themes/
+│   ├── dark-default.theme.ts  # Tema oscuro actual
+│   ├── light.theme.ts         # Tema claro
+│   ├── dark-blue.theme.ts     # Variante azul oscura
+│   └── custom.theme.ts        # Tema personalizable
+└── variables.scss             # Variables CSS globales
+```
+
+**Ventajas**:
+- ✅ Cambio de tema en runtime sin recargar
+- ✅ Fácil mantenimiento y extensión
+- ✅ Soporte para temas claros/oscuros/personalizados
+- ✅ Persistencia en localStorage
+- ✅ CSS moderno y performante
+
+**Variables CSS propuestas**:
+```scss
+--toolbar-bg
+--toolbar-text
+--board-bg
+--column-bg
+--column-text
+--card-bg
+--card-text
+--priority-high
+--priority-medium
+--priority-low
+```
+
+**Temas iniciales**:
+1. Dark Default (actual)
+2. Light (claro)
+3. Dark Blue (azul oscuro)
+
+### 2. Otras Mejoras Futuras
+- [ ] Editor de temas en la app (crear temas personalizados)
+- [ ] Exportar/importar temas (JSON)
+- [ ] Compartir temas entre usuarios
 - [ ] Sistema de etiquetas/tags para tareas
 - [ ] Filtros y búsqueda de tareas
 - [ ] Fechas de vencimiento con calendario
 - [ ] Importar datos desde archivo
-- [ ] Modo oscuro
 - [ ] Sincronización en la nube
 - [ ] Compartir tableros
 
 ## Estado Actual
 ✅ **Build exitoso sin errores**
 ✅ **Todas las características funcionando**
-✅ **Listo para pruebas**
+✅ **APK generado e instalado en Android**
+✅ **Aplicación funcional en móvil**
+🔴 **Pendiente**: Solucionar barra de estado Android
 
 ---
 
-**Última actualización**: 2025-12-06
+**Última actualización**: 2025-12-07
 **Versión Angular**: 20
 **Versión Ionic**: 8
+**Versión Java**: 25 LTS
+**Android SDK**: Command Line Tools (API 34)
