@@ -32,12 +32,16 @@ export class BoardService {
   private async loadBoards() {
     if (!this.storageInitialized) return;
 
-    const boards = await this.storage.get(this.BOARDS_KEY);
+    let boards = await this.storage.get(this.BOARDS_KEY);
 
     if (!boards || boards.length === 0) {
       // Crear tablero por defecto en el primer uso
       await this.createDefaultBoard();
     } else {
+      // Migrar datos antiguos si es necesario
+      boards = this.migrateBoards(boards);
+      await this.saveBoards(boards);
+
       this.boardsSubject.next(boards);
 
       // Cargar el tablero activo
@@ -45,6 +49,61 @@ export class BoardService {
       const activeBoard = boards.find((b: Board) => b.id === activeBoardId) || boards[0];
       this.activeBoardSubject.next(activeBoard);
     }
+  }
+
+  private migrateBoards(boards: Board[]): Board[] {
+    return boards.map(board => {
+      // Asegurar que el board tiene fechas
+      if (!board.createdAt) {
+        board.createdAt = new Date();
+      }
+      if (!board.updatedAt) {
+        board.updatedAt = new Date();
+      }
+
+      // Migrar columnas y tareas
+      board.columns = board.columns.map(column => {
+        column.tasks = column.tasks.map(task => {
+          // Si la tarea no tiene createdAt, intentar derivarlo del ID o usar fecha actual
+          if (!task.createdAt) {
+            const timestampFromId = this.extractTimestampFromId(task.id);
+            task.createdAt = timestampFromId ? new Date(timestampFromId) : new Date();
+          }
+
+          // Asegurar que createdAt es un objeto Date
+          if (typeof task.createdAt === 'string') {
+            task.createdAt = new Date(task.createdAt);
+          }
+
+          // Migrar archivedAt si existe
+          if (task.archivedAt && typeof task.archivedAt === 'string') {
+            task.archivedAt = new Date(task.archivedAt);
+          }
+
+          // Migrar dueDate si existe
+          if (task.dueDate && typeof task.dueDate === 'string') {
+            task.dueDate = new Date(task.dueDate);
+          }
+
+          return task;
+        });
+        return column;
+      });
+
+      return board;
+    });
+  }
+
+  private extractTimestampFromId(id: string): number | null {
+    // Los IDs tienen formato: timestamp-randomstring
+    const parts = id.split('-');
+    if (parts.length >= 1) {
+      const timestamp = parseInt(parts[0]);
+      if (!isNaN(timestamp) && timestamp > 0) {
+        return timestamp;
+      }
+    }
+    return null;
   }
 
   private async createDefaultBoard() {

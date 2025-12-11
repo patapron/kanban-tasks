@@ -35,3 +35,135 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+/**
+ * Custom Theme Variables
+ * -----------------------------------------------------
+ * CSS Variables for dynamic theming system
+ */
+
+:root {
+  // Default Theme: Dark
+  --theme-name: 'dark-default';
+
+  // Backgrounds
+  --theme-bg-primary: #5c6266;
+  --theme-bg-secondary: #1f1f21;
+  --theme-bg-tertiary: #101204;
+  --theme-bg-card: #242528;
+
+  // Text colors
+  --theme-text-primary: #b6b8ba;
+  --theme-text-secondary: rgba(182, 184, 186, 0.7);
+  --theme-text-muted: rgba(182, 184, 186, 0.5);
+
+  // Toolbar
+  --theme-toolbar-bg: #1f1f21;
+  --theme-toolbar-text: #a9abaf;
+
+  // Priority colors
+  --theme-priority-high: #eb445a;
+  --theme-priority-medium: #ffc409;
+  --theme-priority-low: #2dd36f;
+
+  // UI elements
+  --theme-border-color: rgba(182, 184, 186, 0.2);
+  --theme-border-dashed: #b6b8ba;
+  --theme-hover-bg: rgba(255, 255, 255, 0.1);
+  --theme-hover-text: #e0e0e0;
+
+  // Shadows
+  --theme-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --theme-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --theme-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --theme-shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  // Drag & Drop effects
+  --theme-drag-overlay: rgba(255, 255, 255, 0.2);
+  --theme-drag-preview-overlay: rgba(255, 255, 255, 0.15);
+  --theme-placeholder-bg: rgba(182, 184, 186, 0.2);
+}
+
+// Light Theme
+body.theme-light {
+  --theme-name: 'light';
+
+  // Backgrounds
+  --theme-bg-primary: #f5f5f5;
+  --theme-bg-secondary: #ffffff;
+  --theme-bg-tertiary: #e8e8e8;
+  --theme-bg-card: #ffffff;
+
+  // Text colors
+  --theme-text-primary: #2c2c2c;
+  --theme-text-secondary: rgba(44, 44, 44, 0.7);
+  --theme-text-muted: rgba(44, 44, 44, 0.5);
+
+  // Toolbar
+  --theme-toolbar-bg: #ffffff;
+  --theme-toolbar-text: #2c2c2c;
+
+  // Priority colors (same)
+  --theme-priority-high: #eb445a;
+  --theme-priority-medium: #ffc409;
+  --theme-priority-low: #2dd36f;
+
+  // UI elements
+  --theme-border-color: rgba(44, 44, 44, 0.1);
+  --theme-border-dashed: #666666;
+  --theme-hover-bg: rgba(0, 0, 0, 0.05);
+  --theme-hover-text: #000000;
+
+  // Shadows
+  --theme-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --theme-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --theme-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.18);
+  --theme-shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.20);
+
+  // Drag & Drop effects
+  --theme-drag-overlay: rgba(0, 0, 0, 0.1);
+  --theme-drag-preview-overlay: rgba(0, 0, 0, 0.08);
+  --theme-placeholder-bg: rgba(44, 44, 44, 0.1);
+}
+
+// Dark Blue Theme
+body.theme-dark-blue {
+  --theme-name: 'dark-blue';
+
+  // Backgrounds
+  --theme-bg-primary: #1a2332;
+  --theme-bg-secondary: #0f1419;
+  --theme-bg-tertiary: #141b24;
+  --theme-bg-card: #1e2836;
+
+  // Text colors
+  --theme-text-primary: #e1e8f0;
+  --theme-text-secondary: rgba(225, 232, 240, 0.7);
+  --theme-text-muted: rgba(225, 232, 240, 0.5);
+
+  // Toolbar
+  --theme-toolbar-bg: #0f1419;
+  --theme-toolbar-text: #e1e8f0;
+
+  // Priority colors (same)
+  --theme-priority-high: #eb445a;
+  --theme-priority-medium: #ffc409;
+  --theme-priority-low: #2dd36f;
+
+  // UI elements
+  --theme-border-color: rgba(225, 232, 240, 0.15);
+  --theme-border-dashed: #7a8a9e;
+  --theme-hover-bg: rgba(78, 115, 153, 0.2);
+  --theme-hover-text: #ffffff;
+
+  // Shadows
+  --theme-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --theme-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --theme-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --theme-shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.7);
+
+  // Drag & Drop effects
+  --theme-drag-overlay: rgba(78, 115, 153, 0.3);
+  --theme-drag-preview-overlay: rgba(78, 115, 153, 0.2);
+  --theme-placeholder-bg: rgba(225, 232, 240, 0.1);
+}

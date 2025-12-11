@@ -1,35 +1,35 @@
 // Estilos para la toolbar personalizada
 .custom-toolbar {
-  --background: #1F1F21;
-  --color: #A9ABAF;
+  --background: var(--theme-toolbar-bg);
+  --color: var(--theme-toolbar-text);
 
   ion-title {
-    color: #A9ABAF;
+    color: var(--theme-toolbar-text);
   }
 
   ion-button {
-    --color: #A9ABAF;
+    --color: var(--theme-toolbar-text);
   }
 
   ion-icon {
-    color: #A9ABAF;
+    color: var(--theme-toolbar-text);
   }
 
   ion-badge {
-    --background: #eb445a;
+    --background: var(--theme-priority-high);
     --color: #fff;
   }
 }
 
 .kanban-container {
   height: 100%;
-  padding: 16px;
-  background-color: #5C6266;
+  padding: 8px;
+  background-color: var(--theme-bg-primary);
 }
 
 .kanban-board {
   display: flex;
-  gap: 16px;
+  gap: 8px;
   overflow-x: auto;
   align-items: flex-start; // Importante: columnas se ajustan a su contenido
   height: auto;
@@ -44,12 +44,12 @@
   border-radius: 12px;
   padding: 12px;
   cursor: move;
-  background-color: #101204 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  background-color: var(--theme-bg-tertiary) !important;
+  box-shadow: var(--theme-shadow-md);
   transition: box-shadow 0.2s;
 
   &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--theme-shadow-lg);
   }
 
   &.load-before-move {
@@ -57,13 +57,13 @@
     overflow: hidden;
 
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
       bottom: 0;
       width: 100%;
-      background: rgba(255, 255, 255, 0.2);
+      background: var(--theme-drag-overlay);
       transform: scaleX(0);
       transform-origin: left;
       animation: fillLeftToRight 0.4s linear 0.3s forwards;
@@ -74,17 +74,17 @@
 
   &.cdk-drag-preview {
     position: relative;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--theme-shadow-xl);
 
     // Velo blanquecino sobre la columna mientras se arrastra
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(255, 255, 255, 0.15);
+      background: var(--theme-drag-preview-overlay);
       pointer-events: none;
       border-radius: 12px;
       animation: none !important;
@@ -94,8 +94,8 @@
 
   &.cdk-drag-placeholder {
     opacity: 0.3;
-    background: rgba(182, 184, 186, 0.2);
-    border: 2px dashed #B6B8BA;
+    background: var(--theme-placeholder-bg);
+    border: 2px dashed var(--theme-border-dashed);
 
     &::after {
       animation: none !important;
@@ -107,7 +107,7 @@
 .column-header {
   margin-bottom: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--theme-border-color);
 
   .column-title-row {
     display: flex;
@@ -122,8 +122,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: rgba(182, 184, 186, 0.2);
-      color: #B6B8BA;
+      background-color: var(--theme-border-color);
+      color: var(--theme-text-primary);
       border-radius: 12px;
       padding: 0 8px;
     }
@@ -133,20 +133,20 @@
       font-size: 16px;
       font-weight: 600;
       flex: 1;
-      color: #B6B8BA;
+      color: var(--theme-text-primary);
     }
 
     .menu-icon {
       font-size: 20px;
-      color: #B6B8BA;
+      color: var(--theme-text-primary);
       cursor: pointer;
       padding: 4px;
       border-radius: 4px;
       transition: all 0.2s;
 
       &:hover {
-        color: #E0E0E0;
-        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--theme-hover-text);
+        background-color: var(--theme-hover-bg);
       }
     }
   }
@@ -156,22 +156,23 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 8px;
-  min-height: 20px; // Altura mínima muy pequeña
+  min-height: 0; // Sin altura mínima para evitar líneas blancas
 }
 
 .task-card {
   cursor: pointer;
-  background-color: #242528;
+  background-color: var(--theme-bg-card);
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--theme-shadow-sm);
   transition: transform 0.2s, box-shadow 0.2s;
   overflow: hidden;
+  display: flex;
+  flex-direction: row;
 
   // Hover desactivado para evitar confusión
   // &:hover {
   //   transform: translateY(-4px);
-  //   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+  //   box-shadow: var(--theme-shadow-lg);
   // }
 
   // Indicador de progreso - velo que se rellena de izquierda a derecha (load before move)
@@ -180,13 +181,13 @@
     overflow: hidden;
 
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
       bottom: 0;
       width: 100%;
-      background: rgba(255, 255, 255, 0.2);
+      background: var(--theme-drag-overlay);
       transform: scaleX(0);
       transform-origin: left;
       animation: fillLeftToRight 0.4s linear 0.3s forwards;
@@ -206,17 +207,17 @@
 
   &.cdk-drag-preview {
     position: relative;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--theme-shadow-xl);
 
     // Velo blanquecino sobre la tarjeta mientras se arrastra
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(255, 255, 255, 0.2);
+      background: var(--theme-drag-overlay);
       pointer-events: none;
       border-radius: 8px;
       animation: none !important;
@@ -226,8 +227,8 @@
 
   &.cdk-drag-placeholder {
     opacity: 0.3;
-    background: rgba(182, 184, 186, 0.2);
-    border: 2px dashed #B6B8BA;
+    background: var(--theme-placeholder-bg);
+    border: 2px dashed var(--theme-border-dashed);
 
     &::after {
       animation: none !important;
@@ -235,41 +236,52 @@
     }
   }
 
-  .task-priority-bar {
-    height: 8px;
-    width: 100%;
+  .task-priority-sidebar {
+    min-width: 8px;
+    width: 8px;
+    align-self: stretch;
+    border-radius: 8px 0 0 8px;
   }
 
   .task-content {
-    padding: 8px 12px;
+    flex: 1;
+    padding: 8px 10px;
 
     h4 {
       margin: 0 0 4px 0;
       font-size: 14px;
       font-weight: 600;
-      color: #B6B8BA;
+      color: var(--theme-text-primary);
       line-height: 1.3;
     }
 
     .task-description {
-      margin: 0;
+      margin: 0 0 4px 0;
       font-size: 12px;
-      color: #B6B8BA;
+      color: var(--theme-text-primary);
       line-height: 1.4;
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
+    }
+
+    .task-date {
+      margin: 0;
+      font-size: 10px;
+      color: var(--theme-text-secondary);
+      font-weight: 500;
+      text-align: right;
     }
   }
 }
 
 .add-task-container {
-  margin-top: 4px;
+  margin-top: 8px;
 
   .add-task-btn {
-    --color: #B6B8BA;
+    --color: var(--theme-text-primary);
     font-size: 14px;
     height: 36px;
     margin: 0;
@@ -278,8 +290,8 @@
     justify-content: flex-start;
 
     &:hover {
-      --color: #E0E0E0;
-      --background: rgba(255, 255, 255, 0.1);
+      --color: var(--theme-hover-text);
+      --background: var(--theme-hover-bg);
     }
 
     ion-icon {
@@ -291,8 +303,9 @@
 .add-column-card {
   min-width: 280px;
   max-width: 280px;
-  background-color: rgba(16, 18, 4, 0.5);
-  border: 2px dashed #B6B8BA;
+  background-color: var(--theme-bg-tertiary);
+  opacity: 0.5;
+  border: 2px dashed var(--theme-border-dashed);
   border-radius: 12px;
   padding: 12px;
   display: flex;
@@ -301,12 +314,12 @@
   transition: all 0.2s;
 
   &:hover {
-    background-color: rgba(16, 18, 4, 0.8);
-    border-color: #E0E0E0;
+    opacity: 0.8;
+    border-color: var(--theme-hover-text);
   }
 
   .add-column-btn {
-    --color: #B6B8BA;
+    --color: var(--theme-text-primary);
     font-size: 14px;
     height: 44px;
     margin: 0;
@@ -315,7 +328,7 @@
     width: 100%;
 
     &:hover {
-      --color: #E0E0E0;
+      --color: var(--theme-hover-text);
     }
 
     ion-icon {
@@ -344,4 +357,37 @@
   min-width: 18px;
   height: 18px;
   padding: 0 4px;
+}
+
+// Estilos para la tarjeta inline de creación
+.inline-new-task {
+  cursor: default;
+  margin-top: 8px; // Misma separación que entre las otras tarjetas
+
+  .task-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .inline-task-input {
+    --background: transparent;
+    --color: var(--theme-text-primary);
+    --padding-start: 0;
+    --padding-end: 0;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .inline-task-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+
+    ion-button {
+      --padding-start: 8px;
+      --padding-end: 8px;
+      height: 32px;
+    }
+  }
 }

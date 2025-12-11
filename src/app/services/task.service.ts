@@ -120,6 +120,20 @@ export class TaskService {
     await this.saveColumns();
   }
 
+  async reorderTasksInColumn(columnId: TaskStatus, tasks: Task[]): Promise<void> {
+    const columns = this.columnsSubject.value;
+    const column = columns.find(col => col.id === columnId);
+
+    if (!column) return;
+
+    // Mantener las tareas archivadas y solo reordenar las activas
+    const archivedTasks = column.tasks.filter(t => t.archived);
+    column.tasks = [...tasks, ...archivedTasks];
+
+    this.columnsSubject.next([...columns]);
+    await this.saveColumns();
+  }
+
   async reorderColumns(columns: Column[]): Promise<void> {
     this.columnsSubject.next([...columns]);
     await this.saveColumns();

@@ -21,9 +21,11 @@
     "ACTIONS": {
       "EDIT_INFO": "Editar Información",
       "CHANGE_PRIORITY": "Cambiar Prioridad",
+      "MOVE_TO": "Mover a...",
       "ARCHIVE": "Archivar",
       "DELETE": "Eliminar"
-    }
+    },
+    "MOVE_TO_COLUMN": "Mover a Columna"
   },
   "COLUMN": {
     "NEW_COLUMN": "Nueva Columna",
@@ -86,7 +88,14 @@
     "CLEAR_ALL": "Limpiar Todo",
     "CLEAR_ALL_CONFIRM": "¿Limpiar todo?",
     "CLEAR_ALL_MESSAGE": "Se eliminarán todas las tareas y columnas personalizadas.",
-    "LANGUAGE": "Idioma"
+    "LANGUAGE": "Idioma",
+    "THEME": "Tema"
+  },
+  "THEMES": {
+    "SELECT": "Seleccionar Tema",
+    "DARK_DEFAULT": "Oscuro (Por defecto)",
+    "LIGHT": "Claro",
+    "DARK_BLUE": "Azul Oscuro"
   },
   "IMPORT": {
     "TITLE": "Importar Datos",
@@ -127,5 +136,8 @@
     "EMPTY_MESSAGE": "Las tareas archivadas aparecerán aquí",
     "ARCHIVED_ON": "Archivada el",
     "UNARCHIVE": "Desarchivar"
+  },
+  "EXIT": {
+    "PRESS_AGAIN": "Presiona otra vez para salir"
   }
 }

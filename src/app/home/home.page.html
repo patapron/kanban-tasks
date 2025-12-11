@@ -58,14 +58,13 @@
         <div
           cdkDropList
           [id]="column.id"
-          [cdkDropListData]="column.tasks"
+          [cdkDropListData]="getActiveTasks(column)"
           [cdkDropListConnectedTo]="connectedDropLists"
           (cdkDropListDropped)="drop($event, column.id)"
           class="task-list"
         >
           <div
-            *ngFor="let task of column.tasks"
-            [hidden]="task.archived"
+            *ngFor="let task of getActiveTasks(column)"
             cdkDrag
             [cdkDragStartDelay]="700"
             class="task-card"
@@ -76,16 +75,39 @@
             (cdkDragStarted)="onDragStarted()"
             (click)="editTask(task)"
           >
-            <div class="task-priority-bar" [style.background-color]="getPriorityColor(task.priority)"></div>
+            <div class="task-priority-sidebar" [style.background-color]="getPriorityColor(task.priority)"></div>
             <div class="task-content">
               <h4>{{ task.title }}</h4>
               <p class="task-description" *ngIf="task.description">{{ task.description }}</p>
+              <p class="task-date">{{ formatDate(task.createdAt) }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta inline para crear nueva tarea -->
+        <div *ngIf="creatingTaskInColumn === column.id" class="task-card inline-new-task">
+          <div class="task-priority-sidebar" [style.background-color]="getPriorityColor(TaskPriority.MEDIUM)"></div>
+          <div class="task-content">
+            <ion-input
+              class="inline-task-input"
+              [(ngModel)]="newTaskTitle"
+              [placeholder]="'TASK.TITLE' | translate"
+              (keyup.enter)="confirmNewTask()"
+              (keyup.escape)="cancelNewTask()"
+            ></ion-input>
+            <div class="inline-task-actions">
+              <ion-button size="small" fill="solid" color="primary" (click)="confirmNewTask()">
+                <ion-icon slot="icon-only" name="checkmark-outline"></ion-icon>
+              </ion-button>
+              <ion-button size="small" fill="clear" color="medium" (click)="cancelNewTask()">
+                <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+              </ion-button>
             </div>
           </div>
         </div>
 
         <!-- Botón añadir tarjeta al final -->
-        <div class="add-task-container">
+        <div class="add-task-container" *ngIf="creatingTaskInColumn !== column.id">
           <ion-button
             expand="block"
             fill="clear"

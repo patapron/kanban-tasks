@@ -21,9 +21,11 @@
     "ACTIONS": {
       "EDIT_INFO": "Edit Information",
       "CHANGE_PRIORITY": "Change Priority",
+      "MOVE_TO": "Move to...",
       "ARCHIVE": "Archive",
       "DELETE": "Delete"
-    }
+    },
+    "MOVE_TO_COLUMN": "Move to Column"
   },
   "COLUMN": {
     "NEW_COLUMN": "New Column",
@@ -86,7 +88,14 @@
     "CLEAR_ALL": "Clear All",
     "CLEAR_ALL_CONFIRM": "Clear everything?",
     "CLEAR_ALL_MESSAGE": "All tasks and custom columns will be deleted.",
-    "LANGUAGE": "Language"
+    "LANGUAGE": "Language",
+    "THEME": "Theme"
+  },
+  "THEMES": {
+    "SELECT": "Select Theme",
+    "DARK_DEFAULT": "Dark (Default)",
+    "LIGHT": "Light",
+    "DARK_BLUE": "Dark Blue"
   },
   "IMPORT": {
     "TITLE": "Import Data",
@@ -127,5 +136,8 @@
     "EMPTY_MESSAGE": "Archived tasks will appear here",
     "ARCHIVED_ON": "Archived on",
     "UNARCHIVE": "Unarchive"
+  },
+  "EXIT": {
+    "PRESS_AGAIN": "Press again to exit"
   }
 }

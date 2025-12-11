@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TaskService } from '../services/task.service';
 import { LanguageService } from '../services/language.service';
 import { BoardService } from '../services/board.service';
+import { ThemeService, Theme } from '../services/theme.service';
 import { Column, Task, TaskStatus, TaskPriority } from '../models/task.model';
 import { Board } from '../models/board.model';
 
@@ -21,10 +22,13 @@ export class HomePage implements OnInit {
   archivedTasksCount = 0;
   loadBeforeMoveTaskId: string | null = null;
   loadBeforeMoveColumnId: string | TaskStatus | null = null;
+  creatingTaskInColumn: TaskStatus | null = null;
+  newTaskTitle: string = '';
 
   constructor(
     private taskService: TaskService,
     private boardService: BoardService,
+    private themeService: ThemeService,
     private alertController: AlertController,
     private actionSheetController: ActionSheetController,
     private popoverController: PopoverController,
@@ -48,14 +52,23 @@ export class HomePage implements OnInit {
     return this.columns.map(c => c.id);
   }
 
+  getActiveTasks(column: Column): Task[] {
+    return column.tasks.filter(task => !task.archived);
+  }
+
   async drop(event: CdkDragDrop<Task[]>, toStatus: TaskStatus) {
     if (event.previousContainer === event.container) {
+      // Reordenar dentro de la misma columna
       moveItemInArray(
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
+
+      // Guardar inmediatamente
+      await this.taskService.reorderTasksInColumn(toStatus, event.container.data);
     } else {
+      // Mover entre columnas
       const task = event.previousContainer.data[event.previousIndex];
       const fromStatus = task.status;
 
@@ -66,6 +79,7 @@ export class HomePage implements OnInit {
         event.currentIndex
       );
 
+      // Guardar inmediatamente
       await this.taskService.moveTask(
         task.id,
         fromStatus,
@@ -75,43 +89,32 @@ export class HomePage implements OnInit {
     }
   }
 
-  async addTask(columnStatus: TaskStatus) {
-    const alert = await this.alertController.create({
-      header: this.translate.instant('TASK.NEW_TASK'),
-      inputs: [
-        {
-          name: 'title',
-          type: 'text',
-          placeholder: this.translate.instant('TASK.TITLE')
-        },
-        {
-          name: 'description',
-          type: 'textarea',
-          placeholder: this.translate.instant('TASK.DESCRIPTION_OPTIONAL')
-        }
-      ],
-      buttons: [
-        {
-          text: this.translate.instant('BUTTONS.CANCEL'),
-          role: 'cancel'
-        },
-        {
-          text: this.translate.instant('BUTTONS.NEXT'),
-          handler: async (data) => {
-            if (data.title) {
-              // El alert se cerrará automáticamente
-              // Pequeño delay para que el cierre sea suave antes de mostrar el ActionSheet
-              setTimeout(() => {
-                this.selectTaskPriority(data.title, data.description, columnStatus);
-              }, 200);
-            }
-            return true; // Permite que el alert se cierre
-          }
-        }
-      ]
-    });
+  addTask(columnStatus: TaskStatus) {
+    this.creatingTaskInColumn = columnStatus;
+    this.newTaskTitle = '';
+    // Pequeño timeout para que el input se enfoque después del render
+    setTimeout(() => {
+      const input = document.querySelector('.inline-task-input') as HTMLInputElement;
+      if (input) {
+        input.focus();
+      }
+    }, 100);
+  }
 
-    await alert.present();
+  async confirmNewTask() {
+    if (this.newTaskTitle.trim() && this.creatingTaskInColumn) {
+      await this.taskService.addTask({
+        title: this.newTaskTitle.trim(),
+        priority: TaskPriority.MEDIUM,
+        status: this.creatingTaskInColumn
+      });
+      this.cancelNewTask();
+    }
+  }
+
+  cancelNewTask() {
+    this.creatingTaskInColumn = null;
+    this.newTaskTitle = '';
   }
 
   async selectTaskPriority(title: string, description: string, columnStatus: TaskStatus) {
@@ -178,6 +181,13 @@ export class HomePage implements OnInit {
           icon: 'flag-outline',
           handler: async () => {
             await this.changeTaskPriority(task);
+          }
+        },
+        {
+          text: this.translate.instant('TASK.ACTIONS.MOVE_TO'),
+          icon: 'swap-horizontal-outline',
+          handler: async () => {
+            await this.moveTaskToColumn(task);
           }
         },
         {
@@ -281,6 +291,47 @@ export class HomePage implements OnInit {
     await actionSheet.present();
   }
 
+  async moveTaskToColumn(task: Task) {
+    // Crear botones para cada columna (excepto la actual)
+    const buttons = this.columns
+      .filter(column => column.id !== task.status)
+      .map(column => ({
+        text: column.title + (column.id === task.status ? ' ✓' : ''),
+        handler: async () => {
+          // Encontrar la columna actual de la tarea
+          const currentColumn = this.columns.find(col => col.id === task.status);
+          const targetColumn = this.columns.find(col => col.id === column.id);
+
+          if (!currentColumn || !targetColumn) return;
+
+          // Obtener el índice de la tarea en la columna actual
+          const taskIndex = currentColumn.tasks.findIndex(t => t.id === task.id);
+          if (taskIndex === -1) return;
+
+          // Mover la tarea al final de la columna destino
+          await this.taskService.moveTask(
+            task.id,
+            task.status,
+            column.id as TaskStatus,
+            targetColumn.tasks.length
+          );
+        }
+      }));
+
+    // Añadir botón de cancelar
+    buttons.push({
+      text: this.translate.instant('BUTTONS.CANCEL'),
+      handler: () => { }
+    } as any);
+
+    const actionSheet = await this.actionSheetController.create({
+      header: this.translate.instant('TASK.MOVE_TO_COLUMN'),
+      buttons: buttons
+    });
+
+    await actionSheet.present();
+  }
+
   getPriorityColor(priority: TaskPriority): string {
     switch (priority) {
       case TaskPriority.HIGH:
@@ -292,6 +343,16 @@ export class HomePage implements OnInit {
       default:
         return '#92949c';
     }
+  }
+
+  formatDate(date: Date): string {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = String(d.getFullYear()).slice(-2);
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
   }
 
   async dropColumn(event: CdkDragDrop<Column[]>) {
@@ -629,6 +690,9 @@ export class HomePage implements OnInit {
         case 'changeLanguage':
           this.changeLanguage();
           break;
+        case 'changeTheme':
+          this.changeTheme();
+          break;
         case 'exportData':
           this.exportData();
           break;
@@ -746,6 +810,29 @@ export class HomePage implements OnInit {
           text: this.languageService.getLanguageName(lang) + (currentLang === lang ? ' ✓' : ''),
           handler: async () => {
             await this.languageService.setLanguage(lang);
+          }
+        })),
+        {
+          text: this.translate.instant('BUTTONS.CANCEL'),
+          role: 'cancel'
+        }
+      ]
+    });
+
+    await actionSheet.present();
+  }
+
+  async changeTheme() {
+    const themes = this.themeService.getAvailableThemes();
+    const currentTheme = this.themeService.getCurrentTheme();
+
+    const actionSheet = await this.actionSheetController.create({
+      header: this.translate.instant('THEMES.SELECT'),
+      buttons: [
+        ...themes.map(theme => ({
+          text: this.translate.instant(`THEMES.${theme.value.toUpperCase().replace(/-/g, '_')}`) + (currentTheme === theme.value ? ' ✓' : ''),
+          handler: async () => {
+            await this.themeService.setTheme(theme.value);
           }
         })),
         {

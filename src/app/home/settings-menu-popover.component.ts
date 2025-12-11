@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from '../services/language.service';
+import { ThemeService, Theme } from '../services/theme.service';
 
 @Component({
   selector: 'app-settings-menu-popover',
@@ -11,6 +12,11 @@ import { LanguageService } from '../services/language.service';
         <ion-icon name="language-outline" slot="start"></ion-icon>
         <ion-label>{{ 'SETTINGS.LANGUAGE' | translate }}</ion-label>
         <ion-note slot="end">{{ getCurrentLanguageName() }}</ion-note>
+      </ion-item>
+      <ion-item button (click)="changeTheme()">
+        <ion-icon name="color-palette-outline" slot="start"></ion-icon>
+        <ion-label>{{ 'SETTINGS.THEME' | translate }}</ion-label>
+        <ion-note slot="end">{{ getCurrentThemeName() }}</ion-note>
       </ion-item>
       <ion-item button (click)="exportData()">
         <ion-icon name="download-outline" slot="start"></ion-icon>
@@ -51,7 +57,8 @@ export class SettingsMenuPopoverComponent {
   constructor(
     private popoverController: PopoverController,
     public translate: TranslateService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private themeService: ThemeService
   ) {}
 
   getCurrentLanguageName(): string {
@@ -59,8 +66,18 @@ export class SettingsMenuPopoverComponent {
     return this.languageService.getLanguageName(currentLang);
   }
 
+  getCurrentThemeName(): string {
+    const currentTheme = this.themeService.getCurrentTheme();
+    const themeKey = `THEMES.${currentTheme.toUpperCase().replace(/-/g, '_')}`;
+    return this.translate.instant(themeKey);
+  }
+
   async changeLanguage() {
     await this.popoverController.dismiss({ action: 'changeLanguage' });
+  }
+
+  async changeTheme() {
+    await this.popoverController.dismiss({ action: 'changeTheme' });
   }
 
   async exportData() {
